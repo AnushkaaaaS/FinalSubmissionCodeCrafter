@@ -7,6 +7,7 @@ import Stocks from "./Stocks";
 import Portfolio from "./Portfolio";
 import BuyStock from "./BuyStock";
 import SellStock from "./SellStock";
+import StockDetails from "./StockDetails";
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -64,6 +65,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SellStock />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/stock/:symbol" 
+            element={
+              <ProtectedRoute>
+                <StockDetails />
               </ProtectedRoute>
             } 
           />

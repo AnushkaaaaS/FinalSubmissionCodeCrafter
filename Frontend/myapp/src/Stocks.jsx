@@ -108,9 +108,14 @@ const Stocks = () => {
                   <td>${formatNumber(stock.marketCap)}</td>
                   <td className="stock-quantity">{stock.quantity.toLocaleString()}</td>
                   <td>
-                    <Link to={`/buy/${stock.symbol}`}>
-                      <button className="stock-buy-btn">Buy 🛒</button>
-                    </Link>
+                    <div className="stock-actions">
+                      <Link to={`/buy/${stock.symbol}`}>
+                        <button className="stock-buy-btn">Buy 🛒</button>
+                      </Link>
+                      <Link to={`/stock/${stock.symbol}`}>
+                        <button className="stock-details-btn">Details 📊</button>
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))}

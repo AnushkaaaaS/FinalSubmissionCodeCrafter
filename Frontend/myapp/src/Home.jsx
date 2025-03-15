@@ -74,7 +74,7 @@ const Home = () => {
               <div className="stat-label">Stocks Sold</div>
             </div> */}
             
-            <div className="stat-card">
+            <div className="stat-card" onClick={() => navigate('/portfolio')} style={{ cursor: 'pointer' }}>
               <div className="stat-icon">📊</div>
               <div className="stat-value">{userStats.currentHoldings}</div>
               <div className="stat-label">Current Holdings</div>

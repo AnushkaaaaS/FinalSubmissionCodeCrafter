@@ -74,20 +74,30 @@ const StockDetails = () => {
     const fetchStockData = async () => {
       try {
         setLoading(true);
+        console.log(`Fetching stock data for symbol: ${symbol}`);
+        
         // Test server availability first
         try {
           await axios.get(`${connectionStatus.url}/health`);
+          console.log('Server health check passed');
         } catch (healthError) {
           console.error('Server health check failed:', healthError);
           throw new Error('Server is not reachable');
         }
 
         const response = await axios.get(`${connectionStatus.url}/api/stocks/intraday/${symbol}`);
+        console.log('Stock data received:', response.data);
+        
+        // Check if chartData is empty or missing
+        if (!response.data.chartData || response.data.chartData.length === 0) {
+          console.log('No chart data received, generating sample data');
+          response.data.chartData = generateSampleChartData();
+        }
         
         // Ensure chartData exists, if not use sample data
         const data = {
           ...response.data,
-          chartData: response.data.chartData || generateSampleChartData()
+          chartData: response.data.chartData
         };
         
         setStockData(data);
@@ -106,15 +116,19 @@ const StockDetails = () => {
           url: err.config?.url,
           method: err.config?.method
         });
+        
         // Set sample data even on error
-        setStockData({
+        const sampleData = {
           name: symbol,
           symbol: symbol,
           currentPrice: 100,
           change: 0,
           changePercent: 0,
           chartData: generateSampleChartData()
-        });
+        };
+        
+        console.log('Using sample data:', sampleData);
+        setStockData(sampleData);
         setError('Failed to load real-time data. Showing sample data.');
         setLoading(false);
       }
@@ -234,7 +248,7 @@ const StockDetails = () => {
       setStockData(prevData => ({
         ...prevData,
         ...data,
-        chartData: data.chartData?.length > 0 ? data.chartData : prevData.chartData
+        chartData: data.chartData?.length > 0 ? data.chartData : (prevData?.chartData || [])
       }));
       
       if (data.postMarketPrice) {
@@ -404,12 +418,12 @@ const StockDetails = () => {
             )}
             
             <div className="stock-primary-info">
-              <h1>{stockData.name} ({stockData.symbol})</h1>
+              <h1>{stockData?.name || 'Unknown'} ({stockData?.symbol || ''})</h1>
               <div className="price-container">
-                <h2 className="current-price">{formatPrice(stockData.currentPrice)}</h2>
-                <span className={`price-change ${stockData.change >= 0 ? 'positive' : 'negative'}`}>
-                  {stockData.change >= 0 ? '+' : ''}{formatPrice(stockData.change)}
-                  ({stockData.changePercent?.toFixed(2)}%)
+                <h2 className="current-price">{formatPrice(stockData?.currentPrice)}</h2>
+                <span className={`price-change ${stockData?.change >= 0 ? 'positive' : 'negative'}`}>
+                  {stockData?.change >= 0 ? '+' : ''}{formatPrice(stockData?.change)}
+                  ({stockData?.changePercent?.toFixed(2)}%)
                 </span>
                 {!socketConnected && (
                   <span className="badge bg-warning text-dark ms-2">
@@ -447,7 +461,7 @@ const StockDetails = () => {
             </div>
 
             <div className="chart-container">
-              {stockData.chartData && stockData.chartData.length > 0 ? (
+              {stockData && stockData.chartData && stockData.chartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={400}>
                   <AreaChart data={stockData.chartData}>
                     <defs>
@@ -511,35 +525,35 @@ const StockDetails = () => {
               <div className="metric-grid">
                 <div className="metric-card">
                   <span className="metric-label">Open</span>
-                  <span className="metric-value">{formatPrice(stockData.open)}</span>
+                  <span className="metric-value">{formatPrice(stockData?.open)}</span>
                 </div>
                 <div className="metric-card">
                   <span className="metric-label">High</span>
-                  <span className="metric-value">{formatPrice(stockData.high)}</span>
+                  <span className="metric-value">{formatPrice(stockData?.high)}</span>
                 </div>
                 <div className="metric-card">
                   <span className="metric-label">Low</span>
-                  <span className="metric-value">{formatPrice(stockData.low)}</span>
+                  <span className="metric-value">{formatPrice(stockData?.low)}</span>
                 </div>
                 <div className="metric-card">
                   <span className="metric-label">Volume</span>
-                  <span className="metric-value">{formatNumber(stockData.volume)}</span>
+                  <span className="metric-value">{formatNumber(stockData?.volume)}</span>
                 </div>
                 <div className="metric-card">
                   <span className="metric-label">Market Cap</span>
-                  <span className="metric-value">${formatNumber(stockData.marketCap)}</span>
+                  <span className="metric-value">${formatNumber(stockData?.marketCap)}</span>
                 </div>
                 <div className="metric-card">
                   <span className="metric-label">52W High</span>
-                  <span className="metric-value">{formatPrice(stockData.fiftyTwoWeekHigh)}</span>
+                  <span className="metric-value">{formatPrice(stockData?.fiftyTwoWeekHigh)}</span>
                 </div>
                 <div className="metric-card">
                   <span className="metric-label">52W Low</span>
-                  <span className="metric-value">{formatPrice(stockData.fiftyTwoWeekLow)}</span>
+                  <span className="metric-value">{formatPrice(stockData?.fiftyTwoWeekLow)}</span>
                 </div>
                 <div className="metric-card">
                   <span className="metric-label">P/E Ratio</span>
-                  <span className="metric-value">{stockData.peRatio?.toFixed(2) || 'N/A'}</span>
+                  <span className="metric-value">{stockData?.peRatio?.toFixed(2) || 'N/A'}</span>
                 </div>
               </div>
             </div>

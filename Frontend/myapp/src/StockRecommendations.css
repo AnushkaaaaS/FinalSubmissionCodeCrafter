@@ -1,0 +1,377 @@
+.recommendations-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #fff;
+  background-color: #1a1a1a;
+  min-height: 100vh;
+}
+
+.recommendations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 15px;
+}
+
+.recommendations-header h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #fff;
+}
+
+.back-button {
+  background-color: transparent;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #333;
+  border-color: #666;
+}
+
+.recommendations-tabs {
+  display: flex;
+  overflow-x: auto;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.tab-button {
+  background-color: transparent;
+  border: none;
+  color: #aaa;
+  padding: 10px 20px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.tab-button:hover {
+  color: #fff;
+  background-color: #333;
+}
+
+.tab-button.active {
+  color: #fff;
+  background-color: #2196F3;
+  font-weight: 500;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #2196F3;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-container {
+  text-align: center;
+  padding: 40px;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  margin: 30px 0;
+}
+
+.error-message {
+  color: #ff6b6b;
+  margin-bottom: 20px;
+}
+
+.retry-button {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.retry-button:hover {
+  background-color: #0d8bf2;
+}
+
+.recommendations-content {
+  padding: 10px 0;
+}
+
+.recommendation-section {
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #333;
+}
+
+.recommendation-section h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.section-description {
+  color: #aaa;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.stock-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.stock-card {
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+.stock-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border-color: #2196F3;
+}
+
+.stock-header {
+  margin-bottom: 15px;
+}
+
+.stock-header h4 {
+  margin: 0 0 5px 0;
+  font-size: 20px;
+  color: #fff;
+}
+
+.stock-header span {
+  color: #aaa;
+  font-size: 14px;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stock-price {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.stock-change {
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.positive-change {
+  color: #4caf50;
+}
+
+.negative-change {
+  color: #ff5252;
+}
+
+.stock-metrics, .stock-volume, .stock-sector {
+  background-color: #222;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #ddd;
+}
+
+.stock-metrics div, .stock-volume div, .stock-sector div {
+  margin-bottom: 5px;
+}
+
+.stock-reason {
+  font-size: 14px;
+  color: #2196F3;
+  padding: 10px;
+  background-color: rgba(33, 150, 243, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #2196F3;
+}
+
+.sector-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.sector-button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.sector-button:hover {
+  background-color: #2196F3;
+}
+
+.strategy-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.strategy-card {
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #333;
+}
+
+.strategy-card:hover {
+  background-color: #333;
+  border-color: #2196F3;
+  transform: translateY(-5px);
+}
+
+.strategy-card h4 {
+  margin: 0 0 10px 0;
+  color: #2196F3;
+}
+
+.strategy-card p {
+  color: #aaa;
+  margin: 0;
+  font-size: 14px;
+}
+
+.portfolio-info {
+  background-color: #2a2a2a;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #ddd;
+  border: 1px solid #333;
+}
+
+.portfolio-info div {
+  margin-bottom: 5px;
+}
+
+.login-prompt {
+  color: #ff9800;
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(255, 152, 0, 0.1);
+  border-radius: 8px;
+  border: 1px solid #ff9800;
+}
+
+.empty-portfolio-message {
+  background-color: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  margin-bottom: 20px;
+}
+
+.empty-portfolio-message .suggestion {
+  color: #2196F3;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.portfolio-action {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #444;
+}
+
+.portfolio-action ol {
+  margin-left: 20px;
+  margin-bottom: 20px;
+  color: #ddd;
+}
+
+.portfolio-action li {
+  margin-bottom: 8px;
+}
+
+.action-button {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+
+.action-button:hover {
+  background-color: #0d8bf2;
+}
+
+@media (max-width: 768px) {
+  .recommendations-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .recommendations-header h1 {
+    margin-top: 15px;
+  }
+  
+  .stock-cards, .strategy-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .recommendations-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 5px;
+  }
+  
+  .tab-button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+} 

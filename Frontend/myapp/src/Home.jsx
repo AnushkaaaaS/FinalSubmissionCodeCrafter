@@ -117,7 +117,9 @@ const Home = () => {
         <div className="dashboard-card">
           <h3>Stock Recommendation</h3>
           <p>See your most profitable stocks</p>
-          <button className="dashboard-btn">Check Now!</button>
+          <Link to="/recommendations">
+            <button className="dashboard-btn">Check Now!</button>
+          </Link>
         </div>
       </div>
     </div>

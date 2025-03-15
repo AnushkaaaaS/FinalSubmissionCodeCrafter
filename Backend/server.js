@@ -4,6 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoute');
 const stockRoutes = require('./routes/stockRoute');
+const recommendationRoutes = require('./routes/recommendationRoute');
 const http = require('http');
 const { Server } = require('socket.io');
 const yahooFinance = require('yahoo-finance2').default;
@@ -342,6 +343,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/stocks', stockRoutes);
+app.use('/api/recommendations', recommendationRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

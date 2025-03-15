@@ -1,54 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
-import './BuyStock.css';
+import './App.css';
 
 const BuyStock = () => {
   const { symbol } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [stockInfo, setStockInfo] = useState(null);
   const [quantity, setQuantity] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [stockInfo, setStockInfo] = useState(null);
-
-  const fetchStockInfo = async () => {
-    try {
-      const response = await axios.get(`http://localhost:8000/api/stocks`);
-      const stock = response.data.find(s => s.symbol === symbol);
-      if (stock) {
-        setStockInfo({
-          currentPrice: stock.price,
-          change: stock.change,
-          changePercent: stock.changePercent,
-          volume: stock.volume,
-          marketCap: stock.marketCap,
-          quantity: stock.quantity
-        });
-      }
-    } catch (err) {
-      console.error('Error fetching stock info:', err);
-      setError('Failed to fetch stock information');
-    }
-  };
+  const [userCredits, setUserCredits] = useState(0);
 
   useEffect(() => {
-    fetchStockInfo();
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchStockInfo, 30000);
-    return () => clearInterval(interval);
-  }, [symbol]);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        // Fetch stock info
+        const stockResponse = await axios.get(`http://localhost:8000/api/stocks/intraday/${symbol}`);
+        setStockInfo(stockResponse.data);
 
-  const handleBuy = async () => {
+        // Fetch user stats to get current credits
+        const userStatsResponse = await axios.get(`http://localhost:8000/api/stocks/user-stats/${user.email}`);
+        setUserCredits(userStatsResponse.data.currentCredits);
+        
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to load stock information');
+        setLoading(false);
+      }
+    };
+
+    if (symbol && user?.email) {
+      fetchData();
+    }
+  }, [symbol, user?.email]);
+
+  const handleBuy = async (e) => {
+    e.preventDefault();
     if (!quantity || quantity <= 0) {
       setError('Please enter a valid quantity');
       return;
     }
 
-    if (!stockInfo || quantity > stockInfo.quantity) {
-      setError('Not enough stock available');
+    const totalCost = stockInfo.currentPrice * quantity;
+    if (totalCost > userCredits) {
+      setError(`Insufficient credits. You need $${totalCost.toFixed(2)} but have $${userCredits.toFixed(2)}`);
       return;
     }
 
@@ -63,13 +63,13 @@ const BuyStock = () => {
       });
       
       setSuccess('Stock purchased successfully!');
+      setUserCredits(response.data.remainingCredits);
       setLoading(false);
       
       // Update stock info after purchase
       setStockInfo(prev => ({
         ...prev,
-        quantity: prev.quantity - parseInt(quantity),
-        currentPrice: response.data.currentPrice
+        quantity: prev.quantity - parseInt(quantity)
       }));
       
       // Navigate after a short delay to show success message
@@ -78,7 +78,11 @@ const BuyStock = () => {
       }, 1500);
     } catch (err) {
       setLoading(false);
-      setError(err.response?.data?.message || "Error buying stock");
+      if (err.response?.data?.message === "Insufficient credits") {
+        setError(`Insufficient credits. Required: $${err.response.data.required.toFixed(2)}, Available: $${err.response.data.available.toFixed(2)}`);
+      } else {
+        setError(err.response?.data?.message || "Error buying stock");
+      }
     }
   };
 
@@ -96,70 +100,76 @@ const BuyStock = () => {
 
   const totalCost = stockInfo ? (quantity * stockInfo.currentPrice).toFixed(2) : 0;
 
+  if (loading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error">{error}</div>;
+  if (!stockInfo) return <div className="error">Stock not found</div>;
+
   return (
     <div className="buy-stock-container">
-      <button className="back-button" onClick={handleBack}>
-        ← Back to Home
-      </button>
+      <button onClick={handleBack} className="back-button">← Back</button>
       
-      <h2 className="buy-stock-header">
-        Buy <span className="buy-stock-symbol">{symbol}</span>
-      </h2>
-      
-      {stockInfo && (
-        <div className="buy-stock-info">
-          <p>
-            <span className={stockInfo.change >= 0 ? "price-up" : "price-down"}>
-              {stockInfo.change >= 0 ? '↑' : '↓'}
-              {stockInfo.change >= 0 ? '+' : ''}{stockInfo.change.toFixed(2)} ({stockInfo.changePercent.toFixed(2)}%)
+      <div className="stock-info-header">
+        <h2>{stockInfo.name} ({stockInfo.symbol})</h2>
+        <div className="user-credits">
+          Available Credits: <span className={totalCost > userCredits ? 'insufficient' : ''}>
+            ${userCredits.toFixed(2)}
+          </span>
+        </div>
+      </div>
+
+      <div className="stock-details">
+        <div className="price-info">
+          <div className="current-price">
+            ${stockInfo.currentPrice.toFixed(2)}
+            <span className={stockInfo.change >= 0 ? 'positive' : 'negative'}>
+              {stockInfo.change >= 0 ? '▲' : '▼'} {Math.abs(stockInfo.changePercent).toFixed(2)}%
             </span>
-          </p>
-          <p><strong>Current Price:</strong> ${stockInfo.currentPrice.toFixed(2)}</p>
-          <p><strong>Volume:</strong> {formatNumber(stockInfo.volume)}</p>
-          <p><strong>Market Cap:</strong> ${formatNumber(stockInfo.marketCap)}</p>
-          <p><strong>Available Quantity:</strong> {stockInfo.quantity.toLocaleString()}</p>
-        </div>
-      )}
-      
-      {error && (
-        <div className="error-message">
-          {error}
-        </div>
-      )}
-      
-      {success && (
-        <div className="success-message">
-          {success}
-        </div>
-      )}
-      
-      <div className="buy-stock-form">
-        <div className="form-group">
-          <label htmlFor="quantity">Quantity:</label>
-          <input
-            type="number"
-            id="quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            min="1"
-            max={stockInfo?.quantity || 0}
-          />
-        </div>
-        
-        {quantity > 0 && (
-          <div className="total-cost">
-            <span>Total Cost:</span>
-            <strong>${totalCost}</strong>
           </div>
-        )}
-        
-        <button 
-          className="buy-stock-btn" 
-          onClick={handleBuy}
-          disabled={loading || !stockInfo || quantity <= 0 || quantity > stockInfo.quantity}
-        >
-          {loading ? 'Processing...' : 'Buy Stock'}
-        </button>
+        </div>
+
+        <div className="market-info">
+          <div>
+            <span>Volume:</span> {formatNumber(stockInfo.volume)}
+          </div>
+          <div>
+            <span>Market Cap:</span> ${formatNumber(stockInfo.marketCap)}
+          </div>
+          <div>
+            <span>Available Quantity:</span> {stockInfo.quantity}
+          </div>
+        </div>
+
+        <form onSubmit={handleBuy} className="buy-form">
+          <div className="form-group">
+            <label>Quantity:</label>
+            <input
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              min="1"
+              max={stockInfo.quantity}
+              required
+            />
+          </div>
+
+          <div className="cost-preview">
+            <div>Total Cost: <span className={totalCost > userCredits ? 'insufficient' : ''}>${totalCost}</span></div>
+            <div>Remaining Credits: <span className={totalCost > userCredits ? 'insufficient' : ''}>
+              ${(userCredits - totalCost).toFixed(2)}
+            </span></div>
+          </div>
+
+          {error && <div className="error-message">{error}</div>}
+          {success && <div className="success-message">{success}</div>}
+
+          <button 
+            type="submit" 
+            className="buy-button"
+            disabled={loading || totalCost > userCredits || quantity <= 0 || quantity > stockInfo.quantity}
+          >
+            {loading ? 'Processing...' : 'Buy Stock'}
+          </button>
+        </form>
       </div>
     </div>
   );

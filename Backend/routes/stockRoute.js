@@ -219,9 +219,9 @@ router.get('/user-stats/:email', async (req, res) => {
             currentHoldings: 0,
             totalSpent: 0,
             totalEarned: 0,
-            currentCredits: 10000, // Starting credits
+            currentCredits: 0, // Changed from 10000 to 0
             portfolioValue: 0,
-            netWorth: 10000
+            netWorth: 0 // Changed from 10000 to 0
         };
         
         // Find user
@@ -236,7 +236,7 @@ router.get('/user-stats/:email', async (req, res) => {
         console.log(`Found user with ID: ${user._id}`);
         
         try {
-        // Get all transactions for the user
+            // Get all transactions for the user
             const transactions = await Transaction.find({ 
                 userEmail: email.toLowerCase(),
                 price: { $exists: true, $ne: null },
@@ -245,8 +245,12 @@ router.get('/user-stats/:email', async (req, res) => {
             console.log(`Found ${transactions.length} valid transactions for user`);
             
             if (!transactions || transactions.length === 0) {
-                console.log('No transactions found, returning default stats');
-                return res.status(200).json(defaultStats);
+                console.log('No transactions found, returning default stats with user credits');
+                return res.status(200).json({
+                    ...defaultStats,
+                    currentCredits: user.credits,
+                    netWorth: user.credits
+                });
             }
 
             // Calculate statistics with validation
@@ -269,10 +273,9 @@ router.get('/user-stats/:email', async (req, res) => {
                 return total + (price * quantity);
             }, 0);
             
-            // Calculate credits
-        const startingCredits = 10000;
-        const currentCredits = startingCredits - totalSpent + totalEarned;
-        
+            // Use user's actual credits instead of starting credits
+            const currentCredits = user.credits;
+            
             let portfolioValue = 0;
             try {
         // Get current portfolio value
@@ -368,6 +371,22 @@ router.post('/buy', async (req, res) => {
         // Get real-time price
         const realTimeQuote = await getStockQuote(symbol);
         
+        // Calculate total cost
+        const totalCost = realTimeQuote.price * quantity;
+
+        // Check if user has enough credits
+        if (user.credits < totalCost) {
+            return res.status(400).json({ 
+                message: "Insufficient credits", 
+                required: totalCost,
+                available: user.credits
+            });
+        }
+
+        // Update user credits
+        user.credits -= totalCost;
+        await user.save();
+        
         stock.quantity -= quantity;
         stock.price = realTimeQuote.price;
         stock.change = realTimeQuote.change;
@@ -404,7 +423,8 @@ router.post('/buy', async (req, res) => {
             message: "Stock purchased successfully", 
             transaction, 
             portfolio,
-            currentPrice: realTimeQuote.price
+            currentPrice: realTimeQuote.price,
+            remainingCredits: user.credits
         });
     } catch (error) {
         console.error(error);
@@ -432,6 +452,14 @@ router.post('/sell', async (req, res) => {
         if (stockIndex < 0 || portfolio.stocks[stockIndex].quantity < quantity) {
             return res.status(400).json({ message: "Not enough stocks to sell" });
         }
+
+        // Get real-time price for selling
+        const realTimeQuote = await getStockQuote(symbol);
+        const totalEarnings = realTimeQuote.price * quantity;
+
+        // Update user credits with earnings
+        user.credits += totalEarnings;
+        await user.save();
         
         portfolio.stocks[stockIndex].quantity -= quantity;
         if (portfolio.stocks[stockIndex].quantity === 0) {
@@ -440,19 +468,32 @@ router.post('/sell', async (req, res) => {
         await portfolio.save();
         
         stock.quantity += quantity;
+        stock.price = realTimeQuote.price;
+        stock.change = realTimeQuote.change;
+        stock.changePercent = realTimeQuote.changePercent;
+        stock.volume = realTimeQuote.volume;
+        stock.marketCap = realTimeQuote.marketCap;
+        stock.lastUpdated = new Date();
         await stock.save();
         
         const transaction = new Transaction({
             userEmail: email,
             symbol: stock.symbol,
             name: stock.name,
-            price: stock.price,
+            price: realTimeQuote.price,
             quantity,
             type: "SELL"
         });
         await transaction.save();
 
-        res.status(200).json({ message: "Stock sold successfully", transaction, portfolio });
+        res.status(200).json({ 
+            message: "Stock sold successfully", 
+            transaction, 
+            portfolio,
+            currentPrice: realTimeQuote.price,
+            earnedCredits: totalEarnings,
+            newCreditBalance: user.credits
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal Server Error" });

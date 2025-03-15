@@ -49,4 +49,32 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Update User Credits
+router.post("/update-credits", async (req, res) => {
+  try {
+    const { email, credits } = req.body;
+
+    // Validate input
+    if (!email || credits === undefined) {
+      return res.status(400).json({ message: "Email and credits are required!" });
+    }
+
+    if (credits < 0) {
+      return res.status(400).json({ message: "Credits cannot be negative!" });
+    }
+
+    // Find and update user
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found!" });
+
+    user.credits = credits;
+    await user.save();
+    
+    res.json({ message: "Credits updated successfully!", credits: user.credits });
+  } catch (err) {
+    console.error('Error updating credits:', err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;

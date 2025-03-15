@@ -11,6 +11,8 @@ const Home = () => {
   const [userStats, setUserStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isEditingCredits, setIsEditingCredits] = useState(false);
+  const [newCredits, setNewCredits] = useState('');
 
   useEffect(() => {
     const fetchUserStats = async () => {
@@ -36,6 +38,29 @@ const Home = () => {
     navigate('/login');
   };
 
+  const handleUpdateCredits = async () => {
+    try {
+      const credits = parseFloat(newCredits);
+      if (isNaN(credits) || credits < 0) {
+        setError('Please enter a valid positive number');
+        return;
+      }
+
+      await axios.post('http://localhost:8000/api/users/update-credits', {
+        email: user.email,
+        credits
+      });
+
+      // Refresh user stats
+      const response = await axios.get(`http://localhost:8000/api/stocks/user-stats/${user.email}`);
+      setUserStats(response.data);
+      setIsEditingCredits(false);
+      setNewCredits('');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to update credits');
+    }
+  };
+
   return (
     <div className="home-container">
       <header className="dashboard-header">
@@ -56,10 +81,43 @@ const Home = () => {
           <div className="error-message">{error}</div>
         ) : userStats ? (
           <div className="stats-grid">
-            <div className="stat-card">
+            <div 
+              className="stat-card" 
+              onClick={() => setIsEditingCredits(true)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="stat-icon">💰</div>
-              <div className="stat-value">${userStats.currentCredits.toFixed(2)}</div>
-              <div className="stat-label">Available Credits</div>
+              {isEditingCredits ? (
+                <div className="stat-edit">
+                  <input
+                    type="number"
+                    value={newCredits}
+                    onChange={(e) => setNewCredits(e.target.value)}
+                    placeholder="Enter credits"
+                    min="0"
+                    step="0.01"
+                    autoFocus
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleUpdateCredits();
+                      }
+                    }}
+                  />
+                  <div className="stat-edit-buttons">
+                    <button onClick={handleUpdateCredits}>Save</button>
+                    <button onClick={() => {
+                      setIsEditingCredits(false);
+                      setNewCredits('');
+                      setError('');
+                    }}>Cancel</button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="stat-value">${userStats.currentCredits.toFixed(2)}</div>
+                  <div className="stat-label">Available Credits (Click to Edit)</div>
+                </>
+              )}
             </div>
             
             <div className="stat-card">

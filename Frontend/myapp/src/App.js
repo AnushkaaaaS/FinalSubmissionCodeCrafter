@@ -8,6 +8,7 @@ import Portfolio from "./Portfolio";
 import BuyStock from "./BuyStock";
 import SellStock from "./SellStock";
 import StockDetails from "./StockDetails";
+import StockCompare from "./StockCompare";
 import StockRecommendations from "./StockRecommendations";
 
 // Protected route component
@@ -82,6 +83,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <StockDetails />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/stocks/compare/:symbol" 
+            element={
+              <ProtectedRoute>
+                <StockCompare />
               </ProtectedRoute>
             } 
           />

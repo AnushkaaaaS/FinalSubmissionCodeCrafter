@@ -12,21 +12,26 @@ const Portfolio = () => {
   const [totalValue, setTotalValue] = useState(0);
   const navigate = useNavigate();
 
+  const fetchPortfolio = async () => {
+    try {
+      const res = await axios.get(`http://localhost:8000/api/stocks/portfolio/${user.email}`);
+      setPortfolio(res.data);
+      // Calculate total portfolio value
+      const total = res.data.reduce((sum, stock) => sum + (stock.quantity * stock.currentPrice), 0);
+      setTotalValue(total);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load portfolio data');
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setLoading(true);
-    axios.get(`http://localhost:8000/api/stocks/portfolio/${user.email}`)
-      .then(res => {
-        setPortfolio(res.data);
-        // Calculate total portfolio value
-        const total = res.data.reduce((sum, stock) => sum + (stock.quantity * stock.currentPrice), 0);
-        setTotalValue(total);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setError('Failed to load portfolio data');
-        setLoading(false);
-      });
+    fetchPortfolio();
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchPortfolio, 30000);
+    return () => clearInterval(interval);
   }, [user.email]);
 
   const handleBack = () => {
@@ -48,31 +53,23 @@ const Portfolio = () => {
       ) : portfolio.length === 0 ? (
         <div className="empty-portfolio">
           <p>You haven't purchased any stocks yet.</p>
-          <Link to="/stocks">
-            <button className="stock-buy-btn" style={{ margin: '20px auto', display: 'block' }}>
-              Browse Stocks
-            </button>
+          <Link to="/">
+            <button className="buy-first-stock-btn">Start Trading</button>
           </Link>
         </div>
       ) : (
         <>
           <div className="portfolio-summary">
             <div className="summary-card">
-              <div className="summary-label">Total Stocks</div>
-              <div className="summary-value">{portfolio.length}</div>
-            </div>
-            <div className="summary-card">
-              <div className="summary-label">Total Shares</div>
-              <div className="summary-value">
-                {portfolio.reduce((sum, stock) => sum + stock.quantity, 0)}
-              </div>
-            </div>
-            <div className="summary-card">
-              <div className="summary-label">Portfolio Value</div>
+              <div className="summary-label">Total Portfolio Value</div>
               <div className="summary-value">${totalValue.toFixed(2)}</div>
             </div>
+            <div className="summary-card">
+              <div className="summary-label">Number of Stocks</div>
+              <div className="summary-value">{portfolio.length}</div>
+            </div>
           </div>
-          
+
           <div className="portfolio-table-container">
             <table className="portfolio-table">
               <thead>
@@ -81,6 +78,7 @@ const Portfolio = () => {
                   <th>Name</th>
                   <th>Quantity</th>
                   <th>Current Price</th>
+                  <th>Change</th>
                   <th>Total Value</th>
                   <th>Action</th>
                 </tr>
@@ -92,6 +90,9 @@ const Portfolio = () => {
                     <td className="stock-name">{stock.name}</td>
                     <td className="stock-quantity">{stock.quantity.toLocaleString()}</td>
                     <td className="stock-price">${stock.currentPrice.toFixed(2)}</td>
+                    <td className={stock.change >= 0 ? "price-up" : "price-down"}>
+                      {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(2)} ({stock.changePercent.toFixed(2)}%)
+                    </td>
                     <td className="stock-value">${(stock.quantity * stock.currentPrice).toFixed(2)}</td>
                     <td>
                       <Link to={`/sell/${stock.symbol}`}>

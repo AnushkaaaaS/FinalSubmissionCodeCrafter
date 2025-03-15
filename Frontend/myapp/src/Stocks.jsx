@@ -11,19 +11,24 @@ const Stocks = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
+  const fetchStocks = async () => {
+    try {
+      const res = await axios.get('http://localhost:8000/api/stocks');
+      setStocks(res.data);
+      setFilteredStocks(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load stocks data');
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setLoading(true);
-    axios.get('http://localhost:8000/api/stocks')
-      .then(res => {
-        setStocks(res.data);
-        setFilteredStocks(res.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setError('Failed to load stocks data');
-        setLoading(false);
-      });
+    fetchStocks();
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchStocks, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -40,6 +45,14 @@ const Stocks = () => {
 
   const handleBack = () => {
     navigate('/');
+  };
+
+  const formatNumber = (num) => {
+    if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
+    if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+    if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+    if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
+    return num.toFixed(2);
   };
 
   return (
@@ -75,6 +88,9 @@ const Stocks = () => {
                 <th>Symbol</th>
                 <th>Name</th>
                 <th>Price</th>
+                <th>Change</th>
+                <th>Volume</th>
+                <th>Market Cap</th>
                 <th>Quantity Available</th>
                 <th>Action</th>
               </tr>
@@ -85,6 +101,11 @@ const Stocks = () => {
                   <td className="stock-symbol">{stock.symbol}</td>
                   <td className="stock-name">{stock.name}</td>
                   <td className="stock-price">${stock.price.toFixed(2)}</td>
+                  <td className={stock.change >= 0 ? "price-up" : "price-down"}>
+                    {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(2)} ({stock.changePercent.toFixed(2)}%)
+                  </td>
+                  <td>{formatNumber(stock.volume)}</td>
+                  <td>${formatNumber(stock.marketCap)}</td>
                   <td className="stock-quantity">{stock.quantity.toLocaleString()}</td>
                   <td>
                     <Link to={`/buy/${stock.symbol}`}>

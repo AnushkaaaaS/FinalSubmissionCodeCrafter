@@ -10,6 +10,14 @@ import SellStock from "./SellStock";
 import StockDetails from "./StockDetails";
 import StockCompare from "./StockCompare";
 import StockRecommendations from "./StockRecommendations";
+import Bonds from "./Bonds";
+import Insurance from "./Insurance";
+import BuyBond from "./BuyBond";
+import BuyInsurance from "./BuyInsurance";
+import Register from "./Register";
+import Recommendations from "./Recommendations";
+import ProfitEstimation from "./ProfitEstimation";
+import LearningModule from "./LearningModule";
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -28,6 +36,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/" element={<Navigate to="/home" />} />
           
           <Route 
@@ -63,7 +72,7 @@ function App() {
             } 
           />
           <Route 
-            path="/buy/:symbol" 
+            path="/buy-stock/:symbol" 
             element={
               <ProtectedRoute>
                 <BuyStock />
@@ -71,7 +80,7 @@ function App() {
             } 
           />
           <Route 
-            path="/sell/:symbol" 
+            path="/sell-stock/:symbol" 
             element={
               <ProtectedRoute>
                 <SellStock />
@@ -91,6 +100,62 @@ function App() {
             element={
               <ProtectedRoute>
                 <StockCompare />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/bonds" 
+            element={
+              <ProtectedRoute>
+                <Bonds />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/insurance" 
+            element={
+              <ProtectedRoute>
+                <Insurance />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/buy-bond/:id" 
+            element={
+              <ProtectedRoute>
+                <BuyBond />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/buy-insurance/:id" 
+            element={
+              <ProtectedRoute>
+                <BuyInsurance />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/recommendations" 
+            element={
+              <ProtectedRoute>
+                <Recommendations />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profit-estimation" 
+            element={
+              <ProtectedRoute>
+                <ProfitEstimation />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/learning" 
+            element={
+              <ProtectedRoute>
+                <LearningModule />
               </ProtectedRoute>
             } 
           />

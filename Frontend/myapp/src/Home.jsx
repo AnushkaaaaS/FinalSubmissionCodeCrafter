@@ -38,24 +38,68 @@ const Home = () => {
     navigate('/login');
   };
 
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   const handleUpdateCredits = async () => {
     try {
       const credits = parseFloat(newCredits);
-      if (isNaN(credits) || credits < 0) {
+      if (isNaN(credits) || credits <= 0) {
         setError('Please enter a valid positive number');
         return;
       }
 
-      await axios.post('http://localhost:8000/api/users/update-credits', {
-        email: user.email,
-        credits
-      });
+      const amountInPaise = Math.round(credits * 100);
+      const scriptLoaded = await loadRazorpayScript();
+      
+      if (!scriptLoaded) {
+        setError("Failed to load Razorpay SDK. Please try again.");
+        return;
+      }
 
-      // Refresh user stats
-      const response = await axios.get(`http://localhost:8000/api/stocks/user-stats/${user.email}`);
-      setUserStats(response.data);
-      setIsEditingCredits(false);
-      setNewCredits('');
+      const options = {
+        key: 'rzp_test_2BZTggwTEwm8GC',
+        amount: amountInPaise,
+        currency: 'INR',
+        name: 'InvestDelta',
+        description: 'Add Credits',
+        handler: async function (response) {
+          try {
+            // Update user credits after successful payment
+            await axios.post('http://localhost:8000/api/users/update-credits', {
+              email: user.email,
+              credits
+            });
+
+            // Refresh user stats
+            const response = await axios.get(`http://localhost:8000/api/stocks/user-stats/${user.email}`);
+            setUserStats(response.data);
+            setIsEditingCredits(false);
+            setNewCredits('');
+            setError('');
+          } catch (err) {
+            setError('Failed to update credits. Please contact support.');
+          }
+        },
+        prefill: {
+          name: user.name || "User",
+          email: user.email,
+          contact: user.phone || "",
+        },
+        theme: {
+          color: '#3399cc',
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to update credits');
     }
@@ -93,29 +137,25 @@ const Home = () => {
                     type="number"
                     value={newCredits}
                     onChange={(e) => setNewCredits(e.target.value)}
-                    placeholder="Enter credits"
-                    min="0"
+                    placeholder="Enter amount in INR"
+                    min="1"
                     step="0.01"
                     autoFocus
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        handleUpdateCredits();
-                      }
-                    }}
                   />
                   <div className="stat-edit-buttons">
-                    <button onClick={handleUpdateCredits}>Save</button>
+                    <button onClick={handleUpdateCredits}>Add Credits</button>
                     <button onClick={() => {
                       setIsEditingCredits(false);
                       setNewCredits('');
                       setError('');
                     }}>Cancel</button>
                   </div>
+                  {error && <div className="error-message">{error}</div>}
                 </div>
               ) : (
                 <>
                   <div className="stat-value">${userStats.currentCredits.toFixed(2)}</div>
-                  <div className="stat-label">Available Credits (Click to Edit)</div>
+                  <div className="stat-label">Available Credits (Click to Add)</div>
                 </>
               )}
             </div>
@@ -173,10 +213,42 @@ const Home = () => {
         </div>
         
         <div className="dashboard-card">
+          <h3>Profit Estimation</h3>
+          <p>View projected returns and analytics</p>
+          <Link to="/profit-estimation">
+            <button className="dashboard-btn">View Projections</button>
+          </Link>
+        </div>
+
+        <div className="dashboard-card">
           <h3>Stock Recommendation</h3>
           <p>See your most profitable stocks</p>
           <Link to="/recommendations">
             <button className="dashboard-btn">Check Now!</button>
+          </Link>
+        </div>
+
+        <div className="dashboard-card">
+          <h3>Bonds Market</h3>
+          <p>Explore government and corporate bonds</p>
+          <Link to="/bonds">
+            <button className="dashboard-btn">View Bonds</button>
+          </Link>
+        </div>
+
+        <div className="dashboard-card">
+          <h3>Insurance</h3>
+          <p>Browse insurance policies and coverage</p>
+          <Link to="/insurance">
+            <button className="dashboard-btn">View Insurance</button>
+          </Link>
+        </div>
+
+        <div className="dashboard-card">
+          <h3>Learning Module</h3>
+          <p>Learn about investing and trading</p>
+          <Link to="/learning">
+            <button className="dashboard-btn">Start Learning</button>
           </Link>
         </div>
       </div>

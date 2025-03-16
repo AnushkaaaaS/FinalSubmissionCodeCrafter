@@ -63,14 +63,19 @@ router.post("/update-credits", async (req, res) => {
       return res.status(400).json({ message: "Credits cannot be negative!" });
     }
 
-    // Find and update user
+    // Find user
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found!" });
 
-    user.credits = credits;
+    // Add credits to existing balance
+    user.credits += credits;
     await user.save();
     
-    res.json({ message: "Credits updated successfully!", credits: user.credits });
+    res.json({ 
+      message: "Credits added successfully!", 
+      credits: user.credits,
+      added: credits
+    });
   } catch (err) {
     console.error('Error updating credits:', err);
     res.status(500).json({ message: "Server error" });

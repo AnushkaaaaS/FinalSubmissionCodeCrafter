@@ -1,0 +1,134 @@
+.profit-estimation-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.profit-estimation-container h1 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.estimation-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.summary-card h3 {
+  color: #666;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+
+.summary-card .value {
+  color: #3399cc;
+  font-size: 1.8em;
+  font-weight: bold;
+}
+
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chart-card h3 {
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.estimation-notes {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+}
+
+.estimation-notes h3 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.estimation-notes ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.estimation-notes li {
+  color: #666;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.estimation-notes li:before {
+  content: "•";
+  color: #3399cc;
+  position: absolute;
+  left: 0;
+}
+
+.back-button {
+  background-color: #3399cc;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  margin-bottom: 20px;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #2d87b6;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2em;
+  color: #666;
+}
+
+.error {
+  text-align: center;
+  padding: 40px;
+  color: #dc3545;
+  font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+  .estimation-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .charts-container {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card .value {
+    font-size: 1.5em;
+  }
+} 

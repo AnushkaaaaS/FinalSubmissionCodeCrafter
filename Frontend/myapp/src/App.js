@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./AuthContext";
 import Login from "./Login";
 import Home from "./Home";
@@ -36,132 +36,143 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="app">
-          <Navbar />
-          <main className="main-content">
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/" element={<Navigate to="/home" />} />
-              
-              <Route 
-                path="/home" 
-                element={
-                  <ProtectedRouteComponent>
-                    <Home />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/stocks" 
-                element={
-                  <ProtectedRouteComponent>
-                    <Stocks />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/portfolio" 
-                element={
-                  <ProtectedRouteComponent>
-                    <Portfolio />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/recommendations" 
-                element={
-                  <ProtectedRouteComponent>
-                    <StockRecommendations />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/buy-stock/:symbol" 
-                element={
-                  <ProtectedRouteComponent>
-                    <BuyStock />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/sell-stock/:symbol" 
-                element={
-                  <ProtectedRouteComponent>
-                    <SellStock />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/stock/:symbol" 
-                element={
-                  <ProtectedRouteComponent>
-                    <StockDetails />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/stocks/compare/:symbol" 
-                element={
-                  <ProtectedRouteComponent>
-                    <StockCompare />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/bonds" 
-                element={
-                  <ProtectedRouteComponent>
-                    <Bonds />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/insurance" 
-                element={
-                  <ProtectedRouteComponent>
-                    <Insurance />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/buy-bond/:id" 
-                element={
-                  <ProtectedRouteComponent>
-                    <BuyBond />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/buy-insurance/:id" 
-                element={
-                  <ProtectedRouteComponent>
-                    <BuyInsurance />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/profit-estimation" 
-                element={
-                  <ProtectedRouteComponent>
-                    <ProfitEstimation />
-                  </ProtectedRouteComponent>
-                } 
-              />
-              <Route 
-                path="/learning" 
-                element={
-                  <ProtectedRouteComponent>
-                    <LearningModule />
-                  </ProtectedRouteComponent>
-                } 
-              />
-            </Routes>
-          </main>
-        </div>
+        <AppContent />
       </Router>
     </AuthProvider>
   );
 }
+
+// Main app content component
+const AppContent = () => {
+  const location = useLocation();
+  const noNavbarRoutes = ['/login', '/register'];
+  const showNavbar = !noNavbarRoutes.includes(location.pathname);
+
+  return (
+    <div className="app">
+      {showNavbar && <Navbar />}
+      <main className="main-content">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<Navigate to="/home" />} />
+          
+          <Route 
+            path="/home" 
+            element={
+              <ProtectedRouteComponent>
+                <Home />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/stocks" 
+            element={
+              <ProtectedRouteComponent>
+                <Stocks />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/portfolio" 
+            element={
+              <ProtectedRouteComponent>
+                <Portfolio />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/recommendations" 
+            element={
+              <ProtectedRouteComponent>
+                <StockRecommendations />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/buy-stock/:symbol" 
+            element={
+              <ProtectedRouteComponent>
+                <BuyStock />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/sell-stock/:symbol" 
+            element={
+              <ProtectedRouteComponent>
+                <SellStock />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/stock/:symbol" 
+            element={
+              <ProtectedRouteComponent>
+                <StockDetails />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/stocks/compare/:symbol" 
+            element={
+              <ProtectedRouteComponent>
+                <StockCompare />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/bonds" 
+            element={
+              <ProtectedRouteComponent>
+                <Bonds />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/insurance" 
+            element={
+              <ProtectedRouteComponent>
+                <Insurance />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/buy-bond/:id" 
+            element={
+              <ProtectedRouteComponent>
+                <BuyBond />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/buy-insurance/:id" 
+            element={
+              <ProtectedRouteComponent>
+                <BuyInsurance />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/profit-estimation" 
+            element={
+              <ProtectedRouteComponent>
+                <ProfitEstimation />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/learning" 
+            element={
+              <ProtectedRouteComponent>
+                <LearningModule />
+              </ProtectedRouteComponent>
+            } 
+          />
+        </Routes>
+      </main>
+    </div>
+  );
+};
 
 export default App;

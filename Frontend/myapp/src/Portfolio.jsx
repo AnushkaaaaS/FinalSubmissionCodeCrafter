@@ -3,6 +3,10 @@ import { useAuth } from './AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Portfolio.css';
+import {
+  PieChart, Pie, Cell, ResponsiveContainer,
+  Tooltip, Legend
+} from 'recharts';
 
 const Portfolio = () => {
   const { user } = useAuth();
@@ -14,7 +18,47 @@ const Portfolio = () => {
   const [totalStockValue, setTotalStockValue] = useState(0);
   const [totalBondValue, setTotalBondValue] = useState(0);
   const [monthlyPremiums, setMonthlyPremiums] = useState(0);
+  const [riskScore, setRiskScore] = useState(0);
   const navigate = useNavigate();
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
+
+  const calculateRiskScore = (stocks, bonds, insurance) => {
+    // Risk scoring based on portfolio composition and diversification
+    let score = 0;
+    const totalValue = totalStockValue + totalBondValue;
+    
+    if (totalValue === 0) return 0;
+
+    // Asset allocation risk (0-40 points)
+    const stockPercentage = totalStockValue / totalValue;
+    score += stockPercentage * 40; // Higher stock percentage = higher risk
+
+    // Diversification risk (0-30 points)
+    const uniqueSectors = new Set(stocks.map(stock => stock.sector)).size;
+    score += Math.max(0, 30 - (uniqueSectors * 5)); // More sectors = lower risk
+
+    // Bond quality risk (0-20 points)
+    const avgBondRating = bonds.reduce((sum, bond) => {
+      const ratingScore = { 'AAA': 0, 'AA': 5, 'A': 10, 'BBB': 15, 'BB': 20, 'B': 25 };
+      return sum + (ratingScore[bond.rating] || 0);
+    }, 0) / (bonds.length || 1);
+    score += avgBondRating;
+
+    // Insurance coverage (0-10 points)
+    const hasInsurance = insurance.length > 0;
+    score += hasInsurance ? 0 : 10;
+
+    return Math.min(100, Math.round(score));
+  };
+
+  const getRiskLevel = (score) => {
+    if (score < 20) return { level: 'Very Low', color: '#4CAF50' };
+    if (score < 40) return { level: 'Low', color: '#8BC34A' };
+    if (score < 60) return { level: 'Moderate', color: '#FFC107' };
+    if (score < 80) return { level: 'High', color: '#FF9800' };
+    return { level: 'Very High', color: '#F44336' };
+  };
 
   const fetchPortfolio = async () => {
     try {
@@ -36,6 +80,11 @@ const Portfolio = () => {
       setTotalStockValue(stocksTotal);
       setTotalBondValue(bondsTotal);
       setMonthlyPremiums(premiumsTotal);
+
+      // Calculate risk score
+      const riskScore = calculateRiskScore(stocksRes.data, bondsRes.data, insuranceRes.data);
+      setRiskScore(riskScore);
+      
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -54,6 +103,13 @@ const Portfolio = () => {
   const handleBack = () => {
     navigate('/');
   };
+
+  // Data for portfolio distribution pie chart
+  const portfolioDistribution = [
+    { name: 'Stocks', value: totalStockValue },
+    { name: 'Bonds', value: totalBondValue },
+    { name: 'Insurance', value: monthlyPremiums * 12 } // Annualized insurance cost
+  ];
 
   return (
     <div className="portfolio-container">
@@ -100,6 +156,66 @@ const Portfolio = () => {
             <div className="summary-card">
               <div className="summary-label">Monthly Insurance Premiums</div>
               <div className="summary-value">${monthlyPremiums.toFixed(2)}</div>
+            </div>
+          </div>
+
+          {/* Portfolio Analysis Section */}
+          <div className="portfolio-analysis">
+            <h3 className="section-header">Portfolio Analysis</h3>
+            <div className="analysis-grid">
+              {/* Portfolio Distribution Chart */}
+              <div className="chart-card">
+                <h4>Asset Distribution</h4>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={portfolioDistribution}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {portfolioDistribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Risk Analysis Card */}
+              <div className="risk-analysis-card">
+                <h4>Risk Analysis</h4>
+                <div className="risk-score">
+                  <div className="risk-meter">
+                    <div 
+                      className="risk-fill" 
+                      style={{ 
+                        width: `${riskScore}%`,
+                        backgroundColor: getRiskLevel(riskScore).color 
+                      }}
+                    ></div>
+                  </div>
+                  <div className="risk-label">
+                    Risk Level: <span style={{ color: getRiskLevel(riskScore).color }}>
+                      {getRiskLevel(riskScore).level}
+                    </span>
+                  </div>
+                </div>
+                <div className="risk-factors">
+                  <h5>Risk Factors:</h5>
+                  <ul>
+                    <li>Asset Allocation: {((totalStockValue / (totalStockValue + totalBondValue)) * 100).toFixed(1)}% in Stocks</li>
+                    <li>Diversification: {new Set(portfolio.map(stock => stock.sector)).size} Sectors</li>
+                    <li>Bond Quality: {bonds.length > 0 ? 'Mixed Ratings' : 'No Bonds'}</li>
+                    <li>Insurance Coverage: {insurance.length > 0 ? 'Protected' : 'Limited'}</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
 

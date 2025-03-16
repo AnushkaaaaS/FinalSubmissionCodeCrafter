@@ -71,11 +71,7 @@ router.post("/update-credits", async (req, res) => {
     user.credits += credits;
     await user.save();
     
-    res.json({ 
-      message: "Credits added successfully!", 
-      credits: user.credits,
-      added: credits
-    });
+    res.json({ message: "Credits updated successfully!", credits: user.credits });
   } catch (err) {
     console.error('Error updating credits:', err);
     res.status(500).json({ message: "Server error" });

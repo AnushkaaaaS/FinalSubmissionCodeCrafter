@@ -5,7 +5,7 @@
 }
 
 .profit-estimation-container h1 {
-  color: #333;
+  color: var(--text-primary);
   text-align: center;
   margin-bottom: 30px;
 }
@@ -18,21 +18,22 @@
 }
 
 .summary-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   text-align: center;
+  border: 1px solid var(--border-color);
 }
 
 .summary-card h3 {
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 10px;
   font-size: 1.1em;
 }
 
 .summary-card .value {
-  color: #3399cc;
+  color: var(--primary-color);
   font-size: 1.8em;
   font-weight: bold;
 }
@@ -45,28 +46,30 @@
 }
 
 .chart-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
 }
 
 .chart-card h3 {
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 20px;
   text-align: center;
 }
 
 .estimation-notes {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   margin-top: 40px;
+  border: 1px solid var(--border-color);
 }
 
 .estimation-notes h3 {
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 15px;
 }
 
@@ -76,7 +79,7 @@
 }
 
 .estimation-notes li {
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 10px;
   padding-left: 20px;
   position: relative;
@@ -84,13 +87,13 @@
 
 .estimation-notes li:before {
   content: "•";
-  color: #3399cc;
+  color: var(--primary-color);
   position: absolute;
   left: 0;
 }
 
 .back-button {
-  background-color: #3399cc;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -109,13 +112,13 @@
   text-align: center;
   padding: 40px;
   font-size: 1.2em;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .error {
   text-align: center;
   padding: 40px;
-  color: #dc3545;
+  color: var(--danger-color);
   font-size: 1.2em;
 }
 

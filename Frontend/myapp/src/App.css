@@ -1,25 +1,25 @@
 /* General styles */
 :root {
-  /* Dark theme colors */
-  --primary-color: #3a80e9;
-  --secondary-color: #1a1a1a;
-  --accent-color: #4ade80;
-  --warning-color: #f59e0b;
-  --danger-color: #ef4444;
-  --dark-bg: #121212;
-  --card-bg: #1e1e1e;
-  --text-primary: #ffffff;
-  --text-secondary: #a0aec0;
-  --border-color: #2d2d2d;
-  --hover-bg: #2a2a2a;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  /* Light theme colors */
+  --primary-color: #2196f3;
+  --secondary-color: #f8f9fa;
+  --accent-color: #4caf50;
+  --warning-color: #ff9800;
+  --danger-color: #f44336;
+  --dark-bg: #ffffff;
+  --card-bg: #ffffff;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --border-color: #e0e0e0;
+  --hover-bg: #f5f5f5;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
 }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: var(--dark-bg);
+  background-color: #f5f7fa;
   color: var(--text-primary);
   margin: 0;
   padding: 0;
@@ -43,6 +43,7 @@ body {
   background-color: var(--card-bg);
   border-radius: 1rem;
   box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
 }
 
 .dashboard-header h1 {
@@ -77,7 +78,6 @@ body {
 .logout-btn:hover {
   background-color: var(--hover-bg);
   color: var(--danger-color);
-  border-color: var(--danger-color);
 }
 
 /* User statistics section */
@@ -87,6 +87,7 @@ body {
   padding: 2rem;
   margin-bottom: 2rem;
   box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
 }
 
 .user-stats-container h2 {
@@ -106,7 +107,7 @@ body {
   text-align: center;
   padding: 1rem;
   color: var(--danger-color);
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: rgba(244, 67, 54, 0.1);
   border-radius: 0.5rem;
   margin: 1rem 0;
 }
@@ -119,7 +120,7 @@ body {
 }
 
 .stat-card {
-  background-color: var(--secondary-color);
+  background-color: var(--card-bg);
   border-radius: 1rem;
   padding: 1.5rem;
   text-align: center;
@@ -210,7 +211,7 @@ body {
 
 /* Form elements */
 input {
-  background-color: var(--secondary-color);
+  background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   padding: 0.75rem 1rem;
@@ -222,7 +223,7 @@ input {
 input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(58, 128, 233, 0.2);
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
 }
 
 button {
@@ -241,11 +242,11 @@ button {
     gap: 1rem;
     padding: 1rem;
   }
-
+  
   .stats-grid {
     grid-template-columns: 1fr;
   }
-
+  
   .dashboard-content {
     grid-template-columns: 1fr;
   }
@@ -262,7 +263,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--dark-bg);
+  background-color: #f5f7fa;
   padding: 2rem;
 }
 
@@ -301,7 +302,7 @@ button {
 }
 
 .auth-form input {
-  background-color: var(--secondary-color);
+  background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   padding: 0.75rem 1rem;
@@ -312,7 +313,7 @@ button {
 .auth-form input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(58, 128, 233, 0.2);
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
 }
 
 .auth-button {
@@ -394,7 +395,7 @@ button {
 }
 
 .credits-form input {
-  background-color: var(--secondary-color);
+  background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   padding: 0.75rem 1rem;
@@ -405,13 +406,13 @@ button {
 .credits-form input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(58, 128, 233, 0.2);
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
 }
 
 .add-credits-button {
   background-color: var(--primary-color);
   color: white;
-  padding: 1rem;
+    padding: 1rem;
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -482,6 +483,7 @@ button {
   border-radius: 0.75rem;
   padding: 1.5rem;
   box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
 }
 
 .price-info {
@@ -525,8 +527,9 @@ button {
 
 .market-info div {
   padding: 1rem;
-  background: var(--light-bg);
+  background: var(--secondary-color);
   border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
 }
 
 .market-info span {
@@ -563,15 +566,16 @@ button {
 .form-group input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(58, 128, 233, 0.1);
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
 }
 
 .cost-preview,
 .earnings-preview {
-  background: var(--light-bg);
+  background: var(--secondary-color);
   padding: 1rem;
   border-radius: 0.5rem;
   margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
 }
 
 .cost-preview div,
@@ -641,12 +645,12 @@ button {
 }
 
 .error-message {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(244, 67, 54, 0.1);
   color: var(--danger-color);
 }
 
 .success-message {
-  background: rgba(74, 222, 128, 0.1);
+  background: rgba(76, 175, 80, 0.1);
   color: var(--accent-color);
 }
 
@@ -663,10 +667,11 @@ button {
 }
 
 .recommendations-intro {
-  background-color: var(--light-bg);
+  background-color: var(--secondary-color);
   padding: 1.5rem;
   border-radius: 0.75rem;
   margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
 }
 
 .recommendations-intro p {
@@ -687,6 +692,7 @@ button {
   border-radius: 0.75rem;
   padding: 1.5rem;
   box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
 }
 
 .recommendation-section h2 {
@@ -703,10 +709,11 @@ button {
 }
 
 .recommendation-card {
-  background-color: var(--light-bg);
+  background-color: var(--secondary-color);
   border-radius: 0.5rem;
   padding: 1.5rem;
   transition: var(--transition);
+  border: 1px solid var(--border-color);
 }
 
 .recommendation-card:hover {
@@ -798,6 +805,7 @@ button {
   border-radius: 0.75rem;
   padding: 1.5rem;
   box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
 }
 
 .recommendations-notes h3 {
@@ -830,6 +838,46 @@ button {
   }
   
   .recommendations-notes {
+    padding: 1rem;
+  }
+}
+
+/* Additional light theme specific styles */
+.portfolio-table th {
+  background-color: var(--secondary-color);
+  color: var(--text-primary);
+}
+
+.portfolio-table td {
+  color: var(--text-primary);
+}
+
+.risk-meter {
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+}
+
+.chart-card,
+.risk-analysis-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--dark-bg);
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .main-content {
     padding: 1rem;
   }
 }

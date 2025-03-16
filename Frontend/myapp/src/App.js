@@ -90,6 +90,14 @@ const AppContent = () => {
             } 
           />
           <Route 
+            path="/buy/:symbol" 
+            element={
+              <ProtectedRouteComponent>
+                <BuyStock />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
             path="/buy-stock/:symbol" 
             element={
               <ProtectedRouteComponent>

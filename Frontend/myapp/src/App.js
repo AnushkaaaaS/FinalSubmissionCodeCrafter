@@ -55,7 +55,7 @@ const AppContent = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/" element={<Navigate to="/home" />} />
+          <Route path="/" element={<Navigate to="/login" />} />
           
           <Route 
             path="/home" 
@@ -169,6 +169,7 @@ const AppContent = () => {
               </ProtectedRouteComponent>
             } 
           />
+     
           <Route 
             path="/learning" 
             element={

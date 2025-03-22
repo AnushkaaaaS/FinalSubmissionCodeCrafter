@@ -5,13 +5,11 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
-  background: var(--card-bg);
+  background: white;
   border-radius: 16px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   font-family: 'Poppins', sans-serif;
-  border: 1px solid var(--border-color);
-  position: relative;
-  overflow: hidden;
+  border: 1px solid #e0e0e0;
 }
 
 .portfolio-container::before {
@@ -21,7 +19,7 @@
   left: 0;
   width: 100%;
   height: 5px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(90deg, #2196f3, #4caf50);
   background-size: 200% 100%;
   animation: gradientMove 3s ease infinite;
 }
@@ -34,7 +32,7 @@
 
 .portfolio-header {
   font-size: 2em;
-  color: var(--text-primary);
+  color: #2c3e50;
   margin-bottom: 30px;
   text-align: center;
   position: relative;
@@ -50,14 +48,15 @@
   transform: translateX(-50%);
   width: 80px;
   height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(90deg, #2196f3, #4caf50);
   border-radius: 3px;
 }
 
 /* Back button styles */
 .back-button {
   padding: 8px 16px;
-  background-color: var(--secondary-color);
+  background-color: #2196f3;
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -66,13 +65,14 @@
   align-items: center;
   gap: 8px;
   font-size: 1em;
-  color: var(--text-primary);
+  transition: background-color 0.3s ease;
 }
 
 .back-button:hover {
-  background-color: var(--hover-bg);
+  background-color: #1976d2;
 }
 
+/* Portfolio Summary Section */
 .portfolio-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -81,12 +81,18 @@
 }
 
 .summary-card {
-  background: var(--card-bg);
+  background: white;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
-  border: 1px solid var(--border-color);
+  border: 1px solid #e0e0e0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .summary-label {
@@ -101,16 +107,33 @@
   font-weight: bold;
 }
 
+/* Portfolio Sections */
 .portfolio-section {
   margin-bottom: 40px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border: 1px solid #e0e0e0;
 }
 
 .section-header {
-  color: #333;
+  color: #2c3e50;
   font-size: 1.5em;
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid #e0e0e0;
+  position: relative;
+}
+
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(90deg, #2196f3, #4caf50);
 }
 
 .portfolio-table-container {
@@ -132,18 +155,18 @@
   text-align: left;
   color: #666;
   font-weight: 600;
-  border-bottom: 2px solid #eee;
+  border-bottom: 2px solid #e0e0e0;
 }
 
 .portfolio-table td {
   padding: 15px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #e0e0e0;
   color: #333;
 }
 
 .stock-symbol {
   font-weight: bold;
-  color: #2c3e50;
+  color: #2196f3;
 }
 
 .stock-name {
@@ -252,6 +275,7 @@
   color: #d32f2f;
 }
 
+/* Empty Portfolio Section */
 .empty-portfolio {
   text-align: center;
   padding: 40px;
@@ -311,6 +335,7 @@
   background-color: #f57c00;
 }
 
+/* Loading and Error Messages */
 .loading-spinner {
   text-align: center;
   padding: 40px;
@@ -326,39 +351,14 @@
   margin: 20px 0;
 }
 
-@media (max-width: 768px) {
-  .portfolio-container {
-    padding: 10px;
-  }
-
-  .portfolio-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .start-investing-buttons {
-    flex-direction: column;
-  }
-
-  .buy-first-stock-btn,
-  .buy-first-bond-btn,
-  .buy-first-insurance-btn {
-    width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .portfolio-summary {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Portfolio Analysis Styles */
+/* Portfolio Analysis Section */
 .portfolio-analysis {
   margin-bottom: 40px;
   background: white;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  border: 1px solid #e0e0e0;
 }
 
 .analysis-grid {
@@ -373,7 +373,7 @@
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eee;
+  border: 1px solid #e0e0e0;
 }
 
 .chart-card h4 {
@@ -387,7 +387,7 @@
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eee;
+  border: 1px solid #e0e0e0;
 }
 
 .risk-analysis-card h4 {
@@ -448,7 +448,7 @@
   border-bottom: none;
 }
 
-/* Responsive styles for portfolio analysis */
+/* Responsive Styles */
 @media (max-width: 1024px) {
   .analysis-grid {
     grid-template-columns: 1fr;
@@ -469,4 +469,4 @@
     align-items: flex-start;
     gap: 5px;
   }
-} 
+}

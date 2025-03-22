@@ -17,16 +17,15 @@ const Insurance = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        type === 'all' 
+        type === 'all'
           ? 'http://localhost:8000/api/insurance'
           : `http://localhost:8000/api/insurance/type/${type}`
       );
       setInsurance(response.data);
 
-      // Fetch user stats to get current credits
       const userStatsResponse = await axios.get(`http://localhost:8000/api/stocks/user-stats/${user.email}`);
       setUserCredits(userStatsResponse.data.currentCredits);
-      
+
       setLoading(false);
     } catch (err) {
       console.error('Error fetching insurance:', err);
@@ -51,7 +50,7 @@ const Insurance = () => {
     <div className="insurance-container">
       <header className="insurance-header">
         <h1>Insurance Products</h1>
-        <p>Protect your future with our comprehensive insurance plans</p>
+        <p>Secure your future with our tailored insurance plans.</p>
         <div className="user-credits">
           Available Credits: ${userCredits.toFixed(2)}
         </div>
@@ -62,38 +61,36 @@ const Insurance = () => {
       ) : error ? (
         <div className="error-message">{error}</div>
       ) : (
-        <div className="insurance-grid">
+        <>
           <div className="insurance-filters">
             <h3>Filter Insurance</h3>
-            <div className="filter-options">
-              <select 
-                className="filter-select"
-                value={selectedType}
-                onChange={handleTypeChange}
-              >
-                <option value="all">All Types</option>
-                <option value="life">Life Insurance</option>
-                <option value="health">Health Insurance</option>
-                <option value="property">Property Insurance</option>
-              </select>
-            </div>
+            <select
+              className="filter-select"
+              value={selectedType}
+              onChange={handleTypeChange}
+            >
+              <option value="all">All Types</option>
+              <option value="life">Life Insurance</option>
+              <option value="health">Health Insurance</option>
+              <option value="property">Property Insurance</option>
+            </select>
           </div>
 
           <div className="insurance-list">
             {insurance.length === 0 ? (
               <div className="no-insurance-message">
-                <p>No insurance products available matching your filters. Please try different criteria.</p>
+                <p>No insurance products match your selected filters.</p>
               </div>
             ) : (
               insurance.map((product) => (
                 <div key={product.id} className="insurance-card">
-                  <div className="insurance-header">
+                  <div className="insurance-card-header">
                     <h3>{product.name}</h3>
                     <span className={`insurance-type ${product.type.toLowerCase()}`}>
                       {product.type.charAt(0).toUpperCase() + product.type.slice(1)}
                     </span>
                   </div>
-                  <div className="insurance-details">
+                  <div className="insurance-card-details">
                     <div className="detail-item">
                       <span>Provider</span>
                       <strong>{product.provider}</strong>
@@ -123,7 +120,7 @@ const Insurance = () => {
                       ))}
                     </ul>
                   </div>
-                  <button 
+                  <button
                     className="buy-btn"
                     onClick={() => handleBuyClick(product.id)}
                     disabled={userCredits < product.monthlyPremium}
@@ -134,10 +131,10 @@ const Insurance = () => {
               ))
             )}
           </div>
-        </div>
+        </>
       )}
     </div>
   );
 };
 
-export default Insurance; 
+export default Insurance;

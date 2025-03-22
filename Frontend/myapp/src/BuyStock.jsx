@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
-import './App.css';
+import './BuyStock.css';
 
 const BuyStock = () => {
   const { symbol } = useParams();

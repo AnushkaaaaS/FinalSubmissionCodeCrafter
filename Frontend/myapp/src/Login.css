@@ -1,4 +1,7 @@
 /* General Reset */
+html,body{
+  height: 100%;
+}
 * {
     margin: 0;
     padding: 0;
@@ -8,7 +11,7 @@
   
   .auth-container {
     display: flex;
-    height: 100vh;
+    height: 100%;
     width: 100%;
     background: linear-gradient(to right, #1e3c72, #2a5298);
     overflow: hidden;
@@ -207,5 +210,23 @@
   
   .facebook:hover {
     background: #2d4373;
+  }
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  .auth-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .auth-left, .auth-right {
+    flex: 1;
+    height: 100%;
   }
   

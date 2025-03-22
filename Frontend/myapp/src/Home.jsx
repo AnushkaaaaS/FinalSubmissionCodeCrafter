@@ -107,6 +107,7 @@ const Home = () => {
   };
 
   return (
+    <>
     <div className="home-container">
       {/* Hero Section */}
       <div className="hero-container">
@@ -264,8 +265,60 @@ const Home = () => {
             <button className="dashboard-btn">Start Learning</button>
           </Link>
         </div>
+
+   
       </div>
     </div>
+
+<footer className="footer">
+<div className="footer-content">
+  {/* Quick Links Section */}
+  <div className="footer-section">
+    <h4>Quick Links</h4>
+    <ul>
+      <li><a href="/about">About Us</a></li>
+      <li><a href="/services">Services</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/privacy-policy">Privacy Policy</a></li>
+    </ul>
+  </div>
+
+  {/* Social Media Section */}
+  <div className="footer-section">
+    <h4>Follow Us</h4>
+    <div className="social-icons">
+      <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+        <i className="fab fa-facebook"></i>
+      </a>
+      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+        <i className="fab fa-twitter"></i>
+      </a>
+      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+        <i className="fab fa-instagram"></i>
+      </a>
+      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+        <i className="fab fa-linkedin"></i>
+      </a>
+    </div>
+  </div>
+
+  {/* Newsletter Section */}
+  <div className="footer-section">
+    <h4>Newsletter</h4>
+    <p>Subscribe to our newsletter for the latest updates.</p>
+    <form className="newsletter-form">
+      <input type="email" placeholder="Enter your email" required />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+</div>
+
+{/* Copyright Section */}
+<div className="footer-bottom">
+  <p>&copy; {new Date().getFullYear()} InvestGuru. All rights reserved.</p>
+</div>
+</footer>
+</>
   );
 };
 

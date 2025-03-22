@@ -1,20 +1,28 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa'; // Import user icon
 import '../styles/Navbar.css';
+import { useAuth } from '../AuthContext'; // Import useAuth
 
 const Navbar = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { logout } = useAuth(); // Destructure logout from useAuth
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleLogout = () => {
+    logout(); // Call the logout function from AuthContext
+    navigate('/'); // Redirect to the login page after logout
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <Link to="/" className="brand-logo">
+        <Link to="/home" className="brand-logo">
           InvestGuru
         </Link>
       </div>
@@ -45,7 +53,7 @@ const Navbar = () => {
         <Link to="/profile" className="profile-link">
           <FaUserCircle className="user-icon" /> {/* User icon */}
         </Link>
-        <button className="logout-btn">Logout</button>
+        <button className="logout-btn" onClick={handleLogout}>Logout</button>
       </div>
     </nav>
   );

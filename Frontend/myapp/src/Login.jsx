@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
@@ -56,11 +55,8 @@ const AuthPage = () => {
   const toggleForm = () => {
     setIsSignUp(!isSignUp);
     setMessage({ text: "", type: "" });
-  
-    // Reset the form data when switching
     setFormData({ name: "", email: "", password: "" });
   };
-  
 
   return (
     <div className="auth-container">
@@ -69,8 +65,13 @@ const AuthPage = () => {
         className="auth-left"
         animate={{ x: isSignUp ? "100%" : "0%", transition: { type: "spring", stiffness: 80 } }}
       >
-        <h1>{isSignUp ? "Join Us!" : "Welcome Back!"}</h1>
-        <p>{isSignUp ? "Sign up and start exploring!" : "Sign in to continue"}</p>
+        <div className="app-info">
+          <h1>InvestGuru</h1>
+          <p className="tagline">Your Gateway to Smarter Investments</p>
+          <p className="description">
+            InvestGuru helps you make informed decisions with real-time market insights, personalized portfolios, and expert advice. Start your journey to financial freedom today!
+          </p>
+        </div>
         <img src="https://cdn-icons-png.flaticon.com/512/3101/3101626.png" alt="Illustration" />
       </motion.div>
 
@@ -133,7 +134,6 @@ const AuthPage = () => {
             <button className="social-btn google">
               <FcGoogle className="social-icon" />Sign in with Google
             </button>
-            
           </div>
         </form>
       </motion.div>

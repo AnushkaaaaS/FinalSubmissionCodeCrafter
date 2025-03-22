@@ -4,6 +4,25 @@ import { useAuth } from './AuthContext';
 import './App.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import {
+    Container,
+    Grid,
+    Card,
+    CardContent,
+    Typography,
+    Box,
+    Button,
+} from '@mui/material';
+import {
+    TrendingUp,
+    AccountBalance,
+    ShowChart,
+    SmartToy,
+    LocalAtm,
+    Security,
+    School,
+    AutoGraph,
+} from '@mui/icons-material';
 
 const Home = () => {
   const { user, logout } = useAuth();
@@ -105,6 +124,59 @@ const Home = () => {
     }
   };
 
+  const dashboardItems = [
+    {
+      title: 'Stocks',
+      description: 'View and trade stocks in real-time',
+      icon: <ShowChart sx={{ fontSize: 40, color: '#2196f3' }} />,
+      path: '/stocks',
+      color: '#bbdefb'
+    },
+    {
+      title: 'Portfolio',
+      description: 'Manage your investment portfolio',
+      icon: <AccountBalance sx={{ fontSize: 40, color: '#4caf50' }} />,
+      path: '/portfolio',
+      color: '#c8e6c9'
+    },
+    {
+      title: 'Bonds',
+      description: 'Explore and invest in bonds',
+      icon: <LocalAtm sx={{ fontSize: 40, color: '#ff9800' }} />,
+      path: '/bonds',
+      color: '#ffe0b2'
+    },
+    {
+      title: 'Insurance',
+      description: 'Browse insurance options',
+      icon: <Security sx={{ fontSize: 40, color: '#9c27b0' }} />,
+      path: '/insurance',
+      color: '#e1bee7'
+    },
+    {
+      title: 'Learning',
+      description: 'Educational resources for investors',
+      icon: <School sx={{ fontSize: 40, color: '#f44336' }} />,
+      path: '/learning',
+      color: '#ffcdd2'
+    },
+    {
+      title: 'Auto Trading',
+      description: 'Set up automated trading strategies',
+      icon: <AutoGraph sx={{ fontSize: 40, color: '#00bcd4' }} />,
+      path: '/auto-trading',
+      color: '#b2ebf2'
+    },
+    {
+      title: 'Gemini AI Insights',
+      description: 'Get AI-powered market analysis and investment recommendations',
+      icon: <SmartToy sx={{ fontSize: 40, color: '#1a237e' }} />,
+      path: '/gemini-insights',
+      color: '#c5cae9',
+      featured: true
+    }
+  ];
+
   return (
     <div className="home-container">
       <header className="dashboard-header">
@@ -196,61 +268,72 @@ const Home = () => {
       </div>
       
       <div className="dashboard-content">
-        <div className="dashboard-card">
-          <h3>Stock Market</h3>
-          <p>View all available stocks</p>
-          <Link to="/stocks">
-            <button className="dashboard-btn">View Stocks</button>
-          </Link>
-        </div>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
+            Investment Dashboard
+          </Typography>
 
-        <div className="dashboard-card">
-          <h3>Your Portfolio</h3>
-          <p>Check your purchased stocks</p>
-          <Link to="/portfolio">
-            <button className="dashboard-btn">View Portfolio</button>
-          </Link>
-        </div>
-        
-        <div className="dashboard-card">
-          <h3>Profit Estimation</h3>
-          <p>View projected returns and analytics</p>
-          <Link to="/profit-estimation">
-            <button className="dashboard-btn">View Projections</button>
-          </Link>
-        </div>
-
-        <div className="dashboard-card">
-          <h3>Stock Recommendation</h3>
-          <p>See your most profitable stocks</p>
-          <Link to="/recommendations">
-            <button className="dashboard-btn">Check Now!</button>
-          </Link>
-        </div>
-
-        <div className="dashboard-card">
-          <h3>Bonds Market</h3>
-          <p>Explore government and corporate bonds</p>
-          <Link to="/bonds">
-            <button className="dashboard-btn">View Bonds</button>
-          </Link>
-        </div>
-
-        <div className="dashboard-card">
-          <h3>Insurance</h3>
-          <p>Browse insurance policies and coverage</p>
-          <Link to="/insurance">
-            <button className="dashboard-btn">View Insurance</button>
-          </Link>
-        </div>
-
-        <div className="dashboard-card">
-          <h3>Learning Module</h3>
-          <p>Learn about investing and trading</p>
-          <Link to="/learning">
-            <button className="dashboard-btn">Start Learning</button>
-          </Link>
-        </div>
+          <Grid container spacing={3}>
+            {dashboardItems.map((item, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Card 
+                  sx={{ 
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s ease-in-out',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: 3
+                    },
+                    ...(item.featured && {
+                      border: '2px solid #1a237e',
+                      boxShadow: '0 4px 8px rgba(26, 35, 126, 0.2)'
+                    })
+                  }}
+                  onClick={() => navigate(item.path)}
+                >
+                  <CardContent sx={{ 
+                    flexGrow: 1,
+                    background: `linear-gradient(45deg, ${item.color}, white)`,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2
+                  }}>
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: 2,
+                      mb: 2
+                    }}>
+                      {item.icon}
+                      <Typography variant="h6" component="h2">
+                        {item.title}
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2" color="text.secondary">
+                      {item.description}
+                    </Typography>
+                    {item.featured && (
+                      <Button 
+                        variant="contained" 
+                        color="primary"
+                        sx={{ mt: 2 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(item.path);
+                        }}
+                      >
+                        Try AI Insights
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
       </div>
     </div>
   );

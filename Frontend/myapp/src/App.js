@@ -19,6 +19,8 @@ import Recommendations from "./Recommendations";
 import ProfitEstimation from "./ProfitEstimation";
 import LearningModule from "./LearningModule";
 import Navbar from './components/Navbar';
+import AutoTrading from './AutoTrading';
+import GeminiInsights from './pages/GeminiInsights';
 import './App.css';
 
 // Protected route component
@@ -177,6 +179,15 @@ const AppContent = () => {
               </ProtectedRouteComponent>
             } 
           />
+          <Route 
+            path="/auto-trading" 
+            element={
+              <ProtectedRouteComponent>
+                <AutoTrading />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route path="/gemini-insights" element={<GeminiInsights />} />
         </Routes>
       </main>
     </div>

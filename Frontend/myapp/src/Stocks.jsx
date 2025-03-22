@@ -115,6 +115,9 @@ const Stocks = () => {
                       <Link to={`/stock/${stock.symbol}`}>
                         <button className="stock-details-btn">Details 📊</button>
                       </Link>
+                      <Link to={`/prediction/${stock.symbol}`}>
+                        <button className="stock-prediction-btn">Predict 🔮</button>
+                      </Link>
                     </div>
                   </td>
                 </tr>

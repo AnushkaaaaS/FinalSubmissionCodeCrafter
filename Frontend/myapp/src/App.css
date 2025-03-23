@@ -143,7 +143,6 @@ body {
   background-color: rgba(0, 243, 255, 0.1);
   box-shadow: 0 0 20px rgba(0, 243, 255, 0.5),
               inset 0 0 15px rgba(0, 243, 255, 0.5);
-  text-shadow: 0 0 8px rgba(0, 243, 255, 0.8);
   transform: translateY(-2px);
 }
 
@@ -151,9 +150,6 @@ body {
   color: #00f3ff;
   font-size: 24px;
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(0, 243, 255, 1),
-               0 0 20px rgba(0, 243, 255, 1),
-               0 0 30px rgba(0, 243, 255, 0.8);
 }
 
 .stat-label {
@@ -161,8 +157,6 @@ body {
   font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 0 0 10px rgba(0, 243, 255, 0.9),
-               0 0 20px rgba(0, 243, 255, 0.7);
 }
 
 @keyframes neon-glow {
@@ -229,7 +223,6 @@ body {
   font-weight: 500;
   width: 100%;
   transition: var(--transition);
-  text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
 }
 
 .dashboard-btn:hover {

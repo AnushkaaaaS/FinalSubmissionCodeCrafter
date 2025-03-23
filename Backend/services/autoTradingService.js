@@ -228,7 +228,7 @@ class AutoTradingService {
         }
     }
 
-    stopAutoTrading(email) {
+    async stopAutoTrading(email) {
         try {
             if (!this.activeUsers.has(email)) {
                 return false;
@@ -242,9 +242,10 @@ class AutoTradingService {
             }
 
             this.activeUsers.delete(email);
+            console.log(`Successfully stopped auto trading for user: ${email}`);
             return true;
         } catch (error) {
-            console.error('Error stopping auto trading:', error);
+            console.error(`Error stopping auto trading for user ${email}:`, error);
             return false;
         }
     }

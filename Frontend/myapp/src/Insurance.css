@@ -1,16 +1,12 @@
 .insurance-container {
   max-width: 1400px;
-  
-  padding: 40px;
+  margin: 0 auto;
+  padding: 20px;
   background: var(--card-bg);
   border-radius: 16px;
   box-shadow: var(--shadow);
   font-family: 'Poppins', sans-serif;
   border: 1px solid var(--border-color);
-  
-  overflow: hidden;
-  margin-right: 200px;
-  margin-left: 20px;
 }
 
 .insurance-container::before {
@@ -33,28 +29,26 @@
 
 .insurance-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .insurance-header h1 {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 10px;
-  letter-spacing: -0.5px;
 }
 
 .insurance-header p {
   color: var(--text-secondary);
-  font-size: 1.1em;
-  margin-bottom: 20px;
+  font-size: 1em;
+  margin-bottom: 15px;
 }
 
 .user-credits {
-  font-size: 1.2em;
+  font-size: 1.1em;
   color: var(--text-primary);
-  margin-top: 15px;
-  padding: 12px 20px;
+  padding: 8px 16px;
   background-color: var(--secondary-color);
   border-radius: 8px;
   display: inline-block;
@@ -62,31 +56,15 @@
 }
 
 .insurance-filters {
-  width: 250px;
-  margin-bottom: 30px;
-  background: var(--secondary-color);
-  padding: 2px;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-}
-
-.insurance-filters h3 {
-  color: var(--text-primary);
-  margin-bottom: 15px;
-  font-size: 1.2em;
-}
-
-.filter-options {
-  display: flex;
-  gap: 20px;
-  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .filter-select {
-  padding: 12px 20px;
+  padding: 8px 16px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  font-size: 1em;
+  font-size: 0.9em;
   min-width: 200px;
   background-color: var(--card-bg);
   color: var(--text-primary);
@@ -98,43 +76,22 @@
   border-color: var(--primary-color);
 }
 
-/* Custom scrollbar for better UI */
-.insurance-list {
+.insurance-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
-  padding: 20px;
-  margin: 0 auto;
-  max-width: 1400px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 10px;
 }
 
 .insurance-card {
-  width: 400px;
   background: var(--card-bg);
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   overflow: hidden;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  min-height: 500px;
-  position: relative;
-  min-width: 500px;
-  margin-right:200px;
-}
-
-.insurance-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 16px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
-  pointer-events: none;
 }
 
 .insurance-card:hover {
@@ -144,27 +101,27 @@
 }
 
 .insurance-card-header {
-  padding: 24px;
+  padding: 16px;
   background: var(--card-bg);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
+  gap: 12px;
 }
 
 .insurance-card-header h3 {
   margin: 0;
   color: var(--text-primary);
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
   line-height: 1.4;
 }
 
 .insurance-type {
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 0.875rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
   font-weight: 500;
   text-transform: capitalize;
   white-space: nowrap;
@@ -185,79 +142,58 @@
   color: var(--warning-color);
 }
 
-.insurance-card-content {
-  padding: 24px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.description {
-  color: var(--text-secondary);
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.premium-info {
+.insurance-details {
+  padding: 16px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  padding: 20px;
-  background: var(--secondary-color);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  margin: 0;
+  gap: 12px;
 }
 
-.premium, .coverage {
-  text-align: center;
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.premium span, .coverage span {
-  display: block;
+.detail-item span {
   color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin-bottom: 4px;
+  font-size: 0.8rem;
 }
 
-.premium strong, .coverage strong {
-  display: block;
+.detail-item strong {
   color: var(--text-primary);
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.features {
-  margin: 0;
+.features-list {
+  padding: 16px;
+  border-top: 1px solid var(--border-color);
 }
 
-.features h4 {
+.features-list h4 {
   color: var(--text-primary);
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  margin: 0 0 8px 0;
 }
 
-.features ul {
+.features-list ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
 }
 
-.features li {
+.features-list li {
   color: var(--text-secondary);
-  font-size: 0.875rem;
-  padding-left: 24px;
+  font-size: 0.8rem;
+  padding-left: 16px;
   position: relative;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
-.features li::before {
+.features-list li::before {
   content: "✓";
   position: absolute;
   left: 0;
@@ -265,71 +201,37 @@
   font-weight: 600;
 }
 
-.insurance-card-footer {
-  padding: 24px;
-  display: flex;
-  gap: 16px;
-  border-top: 1px solid var(--border-color);
-  background: var(--card-bg);
-}
-
-.learn-more-btn, .get-quote-btn {
-  flex: 1;
-  padding: 10px 16px;
+.buy-btn {
+  margin: 16px;
+  padding: 8px 16px;
   border-radius: 8px;
-  font-size: 0.9375rem;
+  font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  text-align: center;
-}
-
-.learn-more-btn {
-  background: transparent;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
-}
-
-.learn-more-btn:hover {
-  background: rgba(25, 118, 210, 0.04);
-}
-
-.get-quote-btn {
   background: var(--primary-color);
-  border: none;
   color: white;
+  border: none;
 }
 
-.get-quote-btn:hover {
+.buy-btn:hover:not(:disabled) {
   background: #1976d2;
-  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
 }
 
-.loading-spinner {
-  text-align: center;
-  padding: 40px;
-  color: var(--text-secondary);
-  font-size: 1.1em;
-}
-
-.error-message {
-  color: var(--danger-color);
-  text-align: center;
-  padding: 20px;
-  background-color: rgba(244, 67, 54, 0.1);
-  border-radius: 8px;
-  margin: 20px 0;
-  border: 1px solid var(--danger-color);
+.buy-btn:disabled {
+  background: var(--border-color);
+  cursor: not-allowed;
 }
 
 .no-insurance-message {
   text-align: center;
-  padding: 40px;
+  padding: 20px;
   color: var(--text-secondary);
   background-color: var(--secondary-color);
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  font-size: 1.1em;
+  grid-column: 1 / -1;
 }
 
 .status-badge {
@@ -377,12 +279,6 @@
   color: white;
 }
 
-.insurance-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
-}
-
 .category-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
@@ -400,56 +296,21 @@
   grid-column: 1 / -1;
 }
 
-@media (max-width: 1400px) {
-  .insurance-container {
-    margin: 40px 20px;
-  }
-  
-  .insurance-list {
-    grid-template-columns: 1fr;
-    max-width: 900px;
-    margin: 0 auto;
-    gap: 30px;
-  }
-
-  .insurance-card {
-    min-width: auto;
-  }
-}
-
 @media (max-width: 768px) {
   .insurance-container {
-    margin: 20px;
-    padding: 20px;
+    padding: 15px;
   }
 
-  .insurance-list {
-    padding: 10px;
-    gap: 20px;
-    max-width: 100%;
+  .insurance-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
   }
 
   .insurance-card {
     min-height: auto;
-    min-width: auto;
   }
 
-  .insurance-card-header,
-  .insurance-card-content,
-  .insurance-card-footer {
-    padding: 20px;
-  }
-
-  .premium-info {
-    padding: 16px;
-    gap: 16px;
-  }
-
-  .filter-options {
-    flex-direction: column;
-  }
-
-  .filter-select {
-    width: 100%;
+  .features-list ul {
+    grid-template-columns: 1fr;
   }
 } 

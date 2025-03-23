@@ -57,83 +57,74 @@ const Insurance = () => {
         </div>
       </header>
 
+      <div className="insurance-filters">
+        <select 
+          className="filter-select"
+          value={selectedType}
+          onChange={handleTypeChange}
+        >
+          <option value="all">All Types</option>
+          <option value="life">Life Insurance</option>
+          <option value="health">Health Insurance</option>
+          <option value="property">Property Insurance</option>
+        </select>
+      </div>
+
       {loading ? (
         <div className="loading-spinner">Loading insurance data...</div>
       ) : error ? (
         <div className="error-message">{error}</div>
       ) : (
         <div className="insurance-grid">
-          <div className="insurance-filters">
-            <h3>Filter Insurance</h3>
-            <div className="filter-options">
-              <select 
-                className="filter-select"
-                value={selectedType}
-                onChange={handleTypeChange}
-              >
-                <option value="all">All Types</option>
-                <option value="life">Life Insurance</option>
-                <option value="health">Health Insurance</option>
-                <option value="property">Property Insurance</option>
-              </select>
+          {insurance.length === 0 ? (
+            <div className="no-insurance-message">
+              <p>No insurance products available matching your filters. Please try different criteria.</p>
             </div>
-          </div>
-
-          <div className="insurance-list">
-            {insurance.length === 0 ? (
-              <div className="no-insurance-message">
-                <p>No insurance products available matching your filters. Please try different criteria.</p>
-              </div>
-            ) : (
-              insurance.map((product) => (
-                <div key={product.id} className="insurance-card">
-                  <div className="insurance-header">
-                    <h3>{product.name}</h3>
-                    <span className={`insurance-type ${product.type.toLowerCase()}`}>
-                      {product.type.charAt(0).toUpperCase() + product.type.slice(1)}
-                    </span>
-                  </div>
-                  <div className="insurance-details">
-                    <div className="detail-item">
-                      <span>Provider</span>
-                      <strong>{product.provider}</strong>
-                    </div>
-                    <div className="detail-item">
-                      <span>Rating</span>
-                      <strong>{product.rating}</strong>
-                    </div>
-                    <div className="detail-item">
-                      <span>Coverage</span>
-                      <strong>${product.coverageAmount.toLocaleString()}</strong>
-                    </div>
-                    <div className="detail-item">
-                      <span>Monthly Premium</span>
-                      <strong>${product.monthlyPremium.toLocaleString()}</strong>
-                    </div>
-                    <div className="detail-item">
-                      <span>Term</span>
-                      <strong>{product.term === 'Lifetime' ? 'Lifetime' : `${product.term} year(s)`}</strong>
-                    </div>
-                  </div>
-                  <div className="features-list">
-                    <h4>Features & Benefits</h4>
-                    <ul>
-                      {product.features.map((feature, index) => (
-                        <li key={index}>{feature}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <button 
-                    className="buy-btn"
-                    onClick={() => handleBuyClick(product.id)}
-                    disabled={userCredits < product.monthlyPremium}
-                  >
-                    {userCredits < product.monthlyPremium ? 'Insufficient Credits' : 'Purchase Now'}
-                  </button>
+          ) : (
+            insurance.map((product) => (
+              <div key={product.id} className="insurance-card">
+                <div className="insurance-card-header">
+                  <h3>{product.name}</h3>
+                  <span className={`insurance-type ${product.type.toLowerCase()}`}>
+                    {product.type.charAt(0).toUpperCase() + product.type.slice(1)}
+                  </span>
                 </div>
-              ))
-            )}
-          </div>
+                <div className="insurance-details">
+                  <div className="detail-item">
+                    <span>Provider</span>
+                    <strong>{product.provider}</strong>
+                  </div>
+                  <div className="detail-item">
+                    <span>Rating</span>
+                    <strong>{product.rating}</strong>
+                  </div>
+                  <div className="detail-item">
+                    <span>Coverage</span>
+                    <strong>${product.coverageAmount.toLocaleString()}</strong>
+                  </div>
+                  <div className="detail-item">
+                    <span>Monthly Premium</span>
+                    <strong>${product.monthlyPremium.toLocaleString()}</strong>
+                  </div>
+                </div>
+                <div className="features-list">
+                  <h4>Key Features</h4>
+                  <ul>
+                    {product.features.slice(0, 4).map((feature, index) => (
+                      <li key={index}>{feature}</li>
+                    ))}
+                  </ul>
+                </div>
+                <button 
+                  className="buy-btn"
+                  onClick={() => handleBuyClick(product.id)}
+                  disabled={userCredits < product.monthlyPremium}
+                >
+                  {userCredits < product.monthlyPremium ? 'Insufficient Credits' : 'Purchase Now'}
+                </button>
+              </div>
+            ))
+          )}
         </div>
       )}
     </div>

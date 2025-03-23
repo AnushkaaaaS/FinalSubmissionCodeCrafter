@@ -110,13 +110,13 @@ const Stocks = () => {
                   <td>
                     <div className="stock-actions">
                       <Link to={`/buy/${stock.symbol}`}>
-                        <button className="stock-buy-btn">Buy 🛒</button>
+                        <button className="action-btn buy-btn">Buy 🛒</button>
                       </Link>
                       <Link to={`/stock/${stock.symbol}`}>
-                        <button className="stock-details-btn">Details 📊</button>
+                        <button className="action-btn details-btn">Details 📊</button>
                       </Link>
                       <Link to={`/prediction/${stock.symbol}`}>
-                        <button className="stock-prediction-btn">Predict 🔮</button>
+                        <button className="action-btn predict-btn">Predict 🔮</button>
                       </Link>
                     </div>
                   </td>

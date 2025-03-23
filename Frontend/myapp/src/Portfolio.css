@@ -5,7 +5,7 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
-  background: var(--card-bg);
+  background: #1a1a1a00;
   border-radius: 16px;
   box-shadow: var(--shadow);
   font-family: 'Poppins', sans-serif;
@@ -81,22 +81,22 @@
 }
 
 .summary-card {
-  background: var(--card-bg);
+  background: #1a1a1a0a;
+  border-radius: 8px;
   padding: 20px;
-  border-radius: 10px;
   box-shadow: var(--shadow);
   text-align: center;
-  border: 1px solid var(--border-color);
+  border: 1px solid #00f3ff;
 }
 
 .summary-label {
-  color: #666;
+  color: #63e4ff;
   font-size: 1em;
   margin-bottom: 10px;
 }
 
 .summary-value {
-  color: #2c3e50;
+  color: #03f4ff;
   font-size: 1.5em;
   font-weight: bold;
 }
@@ -106,7 +106,7 @@
 }
 
 .section-header {
-  color: #333;
+  color: #00ebff;
   font-size: 1.5em;
   margin-bottom: 20px;
   padding-bottom: 10px;
@@ -115,9 +115,9 @@
 
 .portfolio-table-container {
   overflow-x: auto;
-  background: white;
+  background: #00f3ff00;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0px 0px 3px 0px #00f3ff;
 }
 
 .portfolio-table {
@@ -127,10 +127,10 @@
 }
 
 .portfolio-table th {
-  background-color: #f8f9fa;
+  background-color: #f8fafa00;
   padding: 15px;
   text-align: left;
-  color: #666;
+  color: #00f3ff;
   font-weight: 600;
   border-bottom: 2px solid #eee;
 }
@@ -138,7 +138,7 @@
 .portfolio-table td {
   padding: 15px;
   border-bottom: 1px solid #eee;
-  color: #333;
+  color: #00f3ff;
 }
 
 .stock-symbol {
@@ -173,10 +173,9 @@
 
 .sell-btn {
   padding: 6px 12px;
-  background-color: #f44336;
+  background-color: #f4433600;
   color: white;
-  border: none;
-  border-radius: 4px;
+  border-color: #00f3ff;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -355,7 +354,7 @@
 /* Portfolio Analysis Styles */
 .portfolio-analysis {
   margin-bottom: 40px;
-  background: white;
+  background: #ffffff00;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -369,21 +368,21 @@
 }
 
 .chart-card {
-  background: white;
+  background: #1a1a1a14;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eee;
+  box-shadow: var(--shadow);
+  border: 1px solid #00f3ff;
 }
 
 .chart-card h4 {
-  color: #2c3e50;
+  color: #26d9ff;
   margin-bottom: 20px;
   font-size: 1.2em;
 }
 
 .risk-analysis-card {
-  background: white;
+  background: #ffffff00;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -391,7 +390,7 @@
 }
 
 .risk-analysis-card h4 {
-  color: #2c3e50;
+  color: #00f3ff;
   margin-bottom: 20px;
   font-size: 1.2em;
 }
@@ -415,7 +414,7 @@
 
 .risk-label {
   font-size: 1.1em;
-  color: #666;
+  color: #00f3ff;
   text-align: center;
 }
 
@@ -424,7 +423,7 @@
 }
 
 .risk-factors h5 {
-  color: #2c3e50;
+  color: #00fffa;
   margin-bottom: 15px;
   font-size: 1.1em;
 }
@@ -437,7 +436,7 @@
 
 .risk-factors li {
   padding: 8px 0;
-  color: #666;
+  color: #ffffff;
   border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;

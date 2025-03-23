@@ -33,7 +33,13 @@ router.post('/start/:email', async (req, res) => {
 router.post('/stop/:email', async (req, res) => {
     try {
         const { email } = req.params;
-        const success = autoTradingService.stopAutoTrading(email);
+        const user = await User.findOne({ email });
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const success = await autoTradingService.stopAutoTrading(email);
         
         if (success) {
             res.status(200).json({ message: "Automated trading stopped successfully" });
@@ -42,7 +48,10 @@ router.post('/stop/:email', async (req, res) => {
         }
     } catch (error) {
         console.error('Error stopping automated trading:', error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({ 
+            message: "Internal Server Error",
+            error: error.message 
+        });
     }
 });
 

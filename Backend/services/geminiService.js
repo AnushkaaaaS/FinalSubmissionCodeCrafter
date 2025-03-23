@@ -8,7 +8,7 @@ class GeminiService {
         
         // Get the model
         this.model = this.genAI.getGenerativeModel({ 
-            model: "gemini-pro",
+            model: "gemini-2.0-flash",
             safetySettings: [
                 {
                     category: "HARM_CATEGORY_HARASSMENT",

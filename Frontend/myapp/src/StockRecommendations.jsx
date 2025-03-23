@@ -25,6 +25,20 @@ const StockRecommendations = () => {
             response.data.recommendations.sectors.availableSectors) {
           setSectors(response.data.recommendations.sectors.availableSectors);
         }
+
+        // Fetch undervalued stocks data immediately
+        try {
+          const undervaluedResponse = await axios.get('http://localhost:8000/api/recommendations/undervalued');
+          setRecommendations(prev => ({
+            ...prev,
+            undervalued: {
+              ...prev.undervalued,
+              detailedRecommendations: undervaluedResponse.data.recommendations
+            }
+          }));
+        } catch (undervaluedErr) {
+          console.error('Error fetching undervalued stocks:', undervaluedErr);
+        }
         
         // Also fetch portfolio recommendations if user is logged in
         if (user && user.email) {
@@ -47,7 +61,6 @@ const StockRecommendations = () => {
               message: portfolioErr.response?.data?.message,
               suggestion: portfolioErr.response?.data?.suggestion
             });
-            // Don't set an error for the whole page if just portfolio recommendations fail
           }
         }
         
@@ -446,27 +459,109 @@ const StockRecommendations = () => {
     );
   };
 
+  const getStockScore = (stock) => {
+    let score = 0;
+    
+    // Price performance score (weight: 40%)
+    if (stock.changePercent) {
+      score += (stock.changePercent * 0.4);
+    }
+    
+    // Volume score (weight: 30%)
+    if (stock.volume && stock.avgVolume) {
+      const volumeRatio = stock.volume / stock.avgVolume;
+      score += (volumeRatio * 0.3);
+    }
+    
+    // Valuation score (weight: 30%)
+    if (stock.peRatio) {
+      // Lower P/E ratio is better
+      const peScore = stock.peRatio < 20 ? (20 - stock.peRatio) / 20 : 0;
+      score += (peScore * 0.15);
+    }
+    if (stock.percentBelow52WeekHigh) {
+      // Higher discount from 52-week high is better
+      score += (stock.percentBelow52WeekHigh * 0.15);
+    }
+    
+    return score;
+  };
+
   const renderAllRecommendations = () => {
+    // Combine stocks from all categories
+    const allStocks = [
+      ...(recommendations.trending?.stocks || []),
+      ...(recommendations.trending?.detailedRecommendations || []),
+      ...(recommendations.highVolume?.stocks || []),
+      ...(recommendations.highVolume?.detailedRecommendations || []),
+      ...(recommendations.undervalued?.detailedRecommendations || [])
+    ];
+
+    // Remove duplicates based on symbol
+    const uniqueStocks = Array.from(
+      new Map(allStocks.map(stock => [stock.symbol, stock])).values()
+    );
+
+    // Score and sort stocks
+    const scoredStocks = uniqueStocks
+      .map(stock => ({
+        ...stock,
+        score: getStockScore(stock)
+      }))
+      .sort((a, b) => b.score - a.score);
+
+    // Get top 3 stocks
+    const topStocks = scoredStocks.slice(0, 3);
+    
     return (
       <>
         {renderTrendingStocks()}
         {renderHighVolumeStocks()}
         
         <div className="recommendation-section">
-          <h3>Sector-Based Recommendations</h3>
-          <p className="section-description">Explore stocks by sector</p>
+          <h3>Top Stock Recommendations</h3>
+          <p className="section-description">Our top 3 recommended stocks based on real-time performance, volume, and value metrics</p>
           
-          <div className="sector-buttons">
-            {sectors.map((sector) => (
-              <button 
-                key={sector}
-                className="sector-button"
-                onClick={() => handleSectorSelect(sector)}
-              >
-                {sector}
-              </button>
-            ))}
-          </div>
+          {topStocks.length === 0 ? (
+            <p>Loading top recommendations...</p>
+          ) : (
+            <div className="stock-cards">
+              {topStocks.map((stock, index) => (
+                <div 
+                  key={stock.symbol} 
+                  className={`stock-card ${index === 0 ? 'top-pick' : ''}`}
+                  onClick={() => handleStockClick(stock.symbol)}
+                >
+                  {index === 0 && (
+                    <div className="top-pick-badge">Top Pick</div>
+                  )}
+                  <div className="stock-header">
+                    <h4>{stock.symbol}</h4>
+                    <span>{stock.name}</span>
+                  </div>
+                  <div className="stock-price">{formatPrice(stock.price)}</div>
+                  <div className="stock-change">
+                    {formatChange(stock.change, stock.changePercent)}
+                  </div>
+                  <div className="stock-metrics">
+                    <div>Volume: {formatVolume(stock.volume)}</div>
+                    {stock.avgVolume && (
+                      <div>Avg Volume: {formatVolume(stock.avgVolume)}</div>
+                    )}
+                    {stock.peRatio && (
+                      <div>P/E: {stock.peRatio.toFixed(2)}</div>
+                    )}
+                    {stock.percentBelow52WeekHigh && (
+                      <div>Below 52W High: {stock.percentBelow52WeekHigh.toFixed(2)}%</div>
+                    )}
+                  </div>
+                  <div className="stock-reason">
+                    {stock.reason || `Strong performer with a composite score of ${stock.score.toFixed(2)}`}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         
         <div className="recommendation-section">

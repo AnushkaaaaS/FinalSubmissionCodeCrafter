@@ -213,25 +213,34 @@
 
 .metrics-table-container {
   overflow-x: auto;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  margin-top: 1rem;
 }
 
 .metrics-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 800px;
   color: var(--text-primary);
-}
-
-.metrics-table th,
-.metrics-table td {
-  padding: 0.75rem;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
 }
 
 .metrics-table th {
   background-color: var(--secondary-color);
-  color: var(--text-primary);
+  padding: 16px 20px;
+  text-align: left;
   font-weight: 600;
+  font-size: 1rem;
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.metrics-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.95rem;
 }
 
 .metrics-table tr:last-child td {
@@ -240,6 +249,57 @@
 
 .metrics-table tr:hover td {
   background-color: var(--hover-bg);
+}
+
+.metrics-table td:first-child {
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.metrics-table .positive {
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+.metrics-table .negative {
+  color: var(--danger-color);
+  font-weight: 500;
+}
+
+/* Rankings table styles */
+.recommendation-rankings .table {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.recommendation-rankings .table th {
+  background-color: var(--secondary-color);
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: 16px;
+}
+
+.recommendation-rankings .table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  background-color: var(--card-bg);
+}
+
+.recommendation-rankings .table tr:hover td {
+  background-color: var(--hover-bg);
+}
+
+.recommendation-rankings .table-success td {
+  background-color: rgba(76, 175, 80, 0.1) !important;
+  border-left: 4px solid var(--accent-color);
+}
+
+.recommendation-rankings .table-success:hover td {
+  background-color: rgba(76, 175, 80, 0.15) !important;
 }
 
 .positive {

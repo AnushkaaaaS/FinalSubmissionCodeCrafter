@@ -299,38 +299,44 @@
 .stock-actions {
   display: flex;
   gap: 8px;
-  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .stock-buy-btn,
-.stock-details-btn {
-  padding: 6px 12px;
+.stock-details-btn,
+.stock-prediction-btn {
+  background: linear-gradient(45deg, #2a5298, #1e3c72);
+  color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 6px rgba(30, 60, 114, 0.2);
+  position: relative;
+  overflow: hidden;
 }
 
-.stock-buy-btn {
-  background-color: #4CAF50;
-  color: white;
+.stock-prediction-btn {
+  background: linear-gradient(45deg, #6a3093, #a044ff);
+  box-shadow: 0 4px 6px rgba(106, 48, 147, 0.2);
 }
 
-.stock-details-btn {
-  background-color: #2196F3;
-  color: white;
+.stock-prediction-btn:hover {
+  background: linear-gradient(45deg, #a044ff, #6a3093);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(106, 48, 147, 0.3);
 }
 
-.stock-buy-btn:hover,
-.stock-details-btn:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-.stock-buy-btn:active,
-.stock-details-btn:active {
+.stock-prediction-btn:active {
   transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(106, 48, 147, 0.2);
 }
 
 /* Stock Details Page Styles */

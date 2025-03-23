@@ -9,7 +9,9 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend
+  Legend,
+  BarChart,
+  Bar
 } from 'recharts';
 import './StockDetails.css';
 import './StockCompare.css';
@@ -77,6 +79,18 @@ const generateRandomChange = (price) => {
     change: change,
     changePercent: randomPercent
   };
+};
+
+// Helper function to format and sort time
+const formatChartTime = (timeString, index) => {
+  const baseHour = 9;
+  const baseMinute = 30;
+  const minutesToAdd = index * 15;
+  let hour = baseHour + Math.floor((baseMinute + minutesToAdd) / 60);
+  let minute = (baseMinute + minutesToAdd) % 60;
+  const display = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+  const timestamp = hour * 60 + minute;
+  return { display, timestamp };
 };
 
 const StockCompare = () => {
@@ -189,147 +203,124 @@ const StockCompare = () => {
 
   // Prepare comparison data for chart
   useEffect(() => {
-    if (baseStock && compareStocks.length > 0) {
-      // Normalize data for comparison (percentage change from first data point)
-      const baseChartData = baseStock.chartData || [];
-      
-      if (baseChartData.length === 0) {
-        setCompareData([]);
-        return;
-      }
+    const prepareChartData = async () => {
+      if (!baseStock || compareStocks.length === 0) return;
 
-      // Get the first price point as reference for base stock
-      const baseFirstPrice = baseChartData[0]?.price || 100;
-      
-      // Create normalized data points
-      const normalizedData = baseChartData.map((basePoint, index) => {
-        // Start with the base stock data
-        const dataPoint = {
-          time: basePoint.time,
-          [baseStock.symbol]: ((basePoint.price / baseFirstPrice) - 1) * 100,
-          basePrice: basePoint.price,
-        };
+      try {
+        // Get historical data for base stock
+        const baseChartData = baseStock.chartData || [];
         
-        // Add data for each comparison stock
-        compareStocks.forEach(compareStock => {
-          const compareChartData = compareStock.chartData || [];
-          if (compareChartData.length > 0) {
-            const compareFirstPrice = compareChartData[0]?.price || 100;
-            const comparePoint = compareChartData[index < compareChartData.length ? index : compareChartData.length - 1];
+        if (baseChartData.length === 0) {
+          setCompareData([]);
+          return;
+        }
+
+        const baseFirstPrice = baseChartData[0]?.price || 100;
+        
+        // Create normalized data points
+        let normalizedData = baseChartData
+          .map((basePoint, index) => {
+            const timeObj = formatChartTime(basePoint.time, index);
             
-            if (comparePoint) {
-              // Calculate percentage change from first point
-              const comparePercentChange = ((comparePoint.price / compareFirstPrice) - 1) * 100;
-              
-              // Add to data point
-              dataPoint[compareStock.symbol] = comparePercentChange;
-              dataPoint[`${compareStock.symbol}Price`] = comparePoint.price;
-            }
-          }
-        });
-        
-        return dataPoint;
-      });
-      
-      setCompareData(normalizedData);
-    }
-  }, [baseStock, compareStocks]);
+            const dataPoint = {
+              time: timeObj.display,
+              timestamp: timeObj.timestamp,
+              [baseStock.symbol]: ((basePoint.price / baseFirstPrice) - 1) * 100,
+              basePrice: basePoint.price,
+              [`${baseStock.symbol}Volume`]: basePoint.volume || 0,
+            };
+            
+            compareStocks.forEach(compareStock => {
+              const compareChartData = compareStock.chartData || [];
+              if (compareChartData.length > 0) {
+                const compareFirstPrice = compareChartData[0]?.price || 100;
+                const comparePoint = compareChartData[index < compareChartData.length ? index : compareChartData.length - 1];
+                
+                if (comparePoint) {
+                  const comparePercentChange = ((comparePoint.price / compareFirstPrice) - 1) * 100;
+                  dataPoint[compareStock.symbol] = comparePercentChange;
+                  dataPoint[`${compareStock.symbol}Price`] = comparePoint.price;
+                  dataPoint[`${compareStock.symbol}Volume`] = comparePoint.volume || 0;
+                }
+              }
+            });
+            
+            return dataPoint;
+          })
+          .sort((a, b) => a.timestamp - b.timestamp)
+          .map(({ timestamp, ...rest }) => rest);
 
-  // Periodically refresh stock data to keep daily changes up-to-date
+        setCompareData(normalizedData);
+      } catch (error) {
+        console.error('Error preparing chart data:', error);
+        setError('Failed to load chart data');
+      }
+    };
+
+    prepareChartData();
+  }, [baseStock?.symbol, compareStocks.map(s => s.symbol).join(','), timeRange]); // Only update when stocks or time range change
+
+  // Periodic refresh for prices and stats only (not chart data)
   useEffect(() => {
-    // Skip if we're already loading or generating a recommendation
     if (loading || generatingRecommendation || !baseStock) return;
     
     const refreshStockData = async () => {
       try {
-        console.log('Refreshing stock data...');
-        
-        // Refresh base stock data
+        // Refresh base stock price and stats only
         const baseResponse = await axios.get(`http://localhost:8000/api/stocks/intraday/${symbol}`);
-        console.log('Refreshed base stock data:', baseResponse.data);
         
-        // Check if we have change data
-        if (baseResponse.data.change === 0 && baseResponse.data.changePercent === 0) {
-          console.log('Warning: API returned zero change values for', symbol);
+        if (baseResponse.data.previousClose && baseResponse.data.currentPrice) {
+          const calculatedChange = baseResponse.data.currentPrice - baseResponse.data.previousClose;
+          const calculatedChangePercent = (calculatedChange / baseResponse.data.previousClose) * 100;
           
-          // Try to calculate change from previous close if available
-          if (baseResponse.data.previousClose && baseResponse.data.currentPrice) {
-            const calculatedChange = baseResponse.data.currentPrice - baseResponse.data.previousClose;
-            const calculatedChangePercent = (calculatedChange / baseResponse.data.previousClose) * 100;
-            
-            baseResponse.data.change = calculatedChange;
-            baseResponse.data.changePercent = calculatedChangePercent;
-            
-            console.log('Calculated change values:', {
-              change: calculatedChange,
-              changePercent: calculatedChangePercent
-            });
-          }
+          baseResponse.data.change = calculatedChange;
+          baseResponse.data.changePercent = calculatedChangePercent;
         }
         
-        // Ensure we have all the required data for base stock
-        const baseStockData = {
-          ...baseResponse.data,
-          performance: baseResponse.data.performance || calculatePerformanceFromChartData(baseResponse.data.chartData) || 0,
-          volatility: baseResponse.data.volatility || calculateVolatilityFromChartData(baseResponse.data.chartData) || 0
-        };
+        setBaseStock(prevStock => ({
+          ...prevStock,
+          currentPrice: baseResponse.data.currentPrice,
+          change: baseResponse.data.change,
+          changePercent: baseResponse.data.changePercent,
+          volume: baseResponse.data.volume,
+        }));
         
-        setBaseStock(baseStockData);
-        
-        // Refresh comparison stocks data if any exist
+        // Refresh comparison stocks price and stats only
         if (compareStocks.length > 0) {
-          const updatedCompareStocks = [];
-          for (const stock of compareStocks) {
-            const response = await axios.get(`http://localhost:8000/api/stocks/intraday/${stock.symbol}`);
-            console.log(`Refreshed ${stock.symbol} data:`, response.data);
-            
-            // Check if we have change data
-            if (response.data.change === 0 && response.data.changePercent === 0) {
-              console.log('Warning: API returned zero change values for', stock.symbol);
+          const updatedCompareStocks = await Promise.all(
+            compareStocks.map(async (stock) => {
+              const response = await axios.get(`http://localhost:8000/api/stocks/intraday/${stock.symbol}`);
               
-              // Try to calculate change from previous close if available
               if (response.data.previousClose && response.data.currentPrice) {
                 const calculatedChange = response.data.currentPrice - response.data.previousClose;
                 const calculatedChangePercent = (calculatedChange / response.data.previousClose) * 100;
                 
                 response.data.change = calculatedChange;
                 response.data.changePercent = calculatedChangePercent;
-                
-                console.log('Calculated change values:', {
-                  change: calculatedChange,
-                  changePercent: calculatedChangePercent
-                });
               }
-            }
-            
-            // Ensure we have all the required data for comparison stock
-            const stockData = {
-              ...response.data,
-              performance: response.data.performance || calculatePerformanceFromChartData(response.data.chartData) || 0,
-              volatility: response.data.volatility || calculateVolatilityFromChartData(response.data.chartData) || 0
-            };
-            
-            updatedCompareStocks.push(stockData);
-          }
+              
+              return {
+                ...stock,
+                currentPrice: response.data.currentPrice,
+                change: response.data.change,
+                changePercent: response.data.changePercent,
+                volume: response.data.volume,
+              };
+            })
+          );
+          
           setCompareStocks(updatedCompareStocks);
         }
-        
-        console.log('Stock data refreshed successfully');
       } catch (err) {
         console.error('Error refreshing stock data:', err);
-        // Don't set error state to avoid disrupting the UI
       }
     };
     
-    // Refresh immediately on first load
     refreshStockData();
-    
-    // Set up interval to refresh data every 60 seconds (adjust as needed)
     const refreshInterval = setInterval(refreshStockData, 60000);
     
-    // Clean up interval on component unmount
     return () => clearInterval(refreshInterval);
-  }, [symbol, compareStocks.length, loading, generatingRecommendation, baseStock]);
+  }, [symbol, compareStocks.length, loading, generatingRecommendation, baseStock?.symbol]);
 
   // Calculate stock recommendations based on multiple metrics
   const stockRecommendation = useMemo(() => {
@@ -1016,42 +1007,80 @@ const StockCompare = () => {
             <div className="chart-container">
               {compareStocks.length > 0 ? (
                 compareData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={400}>
-                    <LineChart data={compareData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#404040" />
-                      <XAxis 
-                        dataKey="time" 
-                        tick={{ fill: '#fff' }}
-                        stroke="#666"
-                      />
-                      <YAxis 
-                        tick={{ fill: '#fff' }}
-                        stroke="#666"
-                        label={{ value: 'Percent Change (%)', angle: -90, position: 'insideLeft', fill: '#fff' }}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Legend />
-                      <Line 
-                        type="monotone" 
-                        dataKey={baseStock?.symbol} 
-                        stroke="#2196F3" 
-                        strokeWidth={2}
-                        dot={false}
-                        activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2 }}
-                      />
-                      {compareStocks.map((stock, index) => (
+                  <>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart data={compareData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#404040" />
+                        <XAxis 
+                          dataKey="time" 
+                          tick={{ fill: '#fff' }}
+                          stroke="#666"
+                          interval="preserveStartEnd"
+                          minTickGap={50}
+                        />
+                        <YAxis 
+                          tick={{ fill: '#fff' }}
+                          stroke="#666"
+                          label={{ value: 'Percent Change (%)', angle: -90, position: 'insideLeft', fill: '#fff' }}
+                        />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend />
                         <Line 
-                          key={stock.symbol}
                           type="monotone" 
-                          dataKey={stock.symbol} 
-                          stroke={CHART_COLORS[index % CHART_COLORS.length]} 
+                          dataKey={baseStock?.symbol} 
+                          stroke="#2196F3" 
                           strokeWidth={2}
                           dot={false}
                           activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2 }}
                         />
-                      ))}
-                    </LineChart>
-                  </ResponsiveContainer>
+                        {compareStocks.map((stock, index) => (
+                          <Line 
+                            key={stock.symbol}
+                            type="monotone" 
+                            dataKey={stock.symbol} 
+                            stroke={CHART_COLORS[index % CHART_COLORS.length]} 
+                            strokeWidth={2}
+                            dot={false}
+                            activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2 }}
+                          />
+                        ))}
+                      </LineChart>
+                    </ResponsiveContainer>
+                    
+                    <ResponsiveContainer width="100%" height={100}>
+                      <BarChart data={compareData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#404040" />
+                        <XAxis 
+                          dataKey="time" 
+                          tick={{ fill: '#fff' }}
+                          stroke="#666"
+                          height={0}
+                        />
+                        <YAxis 
+                          tick={{ fill: '#fff' }}
+                          stroke="#666"
+                          label={{ value: 'Volume', angle: -90, position: 'insideLeft', fill: '#fff' }}
+                        />
+                        <Tooltip 
+                          formatter={(value) => formatNumber(value)}
+                          labelFormatter={(label) => `Volume at ${label}`}
+                        />
+                        <Bar 
+                          dataKey={`${baseStock?.symbol}Volume`} 
+                          fill="#2196F3" 
+                          opacity={0.8} 
+                        />
+                        {compareStocks.map((stock, index) => (
+                          <Bar 
+                            key={stock.symbol}
+                            dataKey={`${stock.symbol}Volume`} 
+                            fill={CHART_COLORS[index % CHART_COLORS.length]} 
+                            opacity={0.8}
+                          />
+                        ))}
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </>
                 ) : (
                   <div className="text-center p-4">
                     <p>Comparison chart data unavailable</p>

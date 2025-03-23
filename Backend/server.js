@@ -7,6 +7,8 @@ const stockRoutes = require('./routes/stockRoute');
 const recommendationRoutes = require('./routes/recommendationRoute');
 const bondsRoutes = require('./routes/bonds');
 const insuranceRoutes = require('./routes/insurance');
+const autoTradingRoutes = require('./routes/autoTradingRoute');
+const aiInsightsRoutes = require('./routes/aiInsightsRoute');
 const http = require('http');
 const { Server } = require('socket.io');
 const yahooFinance = require('yahoo-finance2').default;
@@ -348,6 +350,8 @@ app.use('/api/stocks', stockRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/bonds', bondsRoutes);
 app.use('/api/insurance', insuranceRoutes);
+app.use('/api/auto-trading', autoTradingRoutes);
+app.use('/api/ai-insights', aiInsightsRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -2,21 +2,35 @@ const yahooFinance = require('yahoo-finance2').default;
 
 const getStockQuote = async (symbol) => {
     try {
+        console.log(`Fetching quote for ${symbol}...`);
         const quote = await yahooFinance.quote(symbol);
-        if (!quote || !quote.regularMarketPrice) {
+        
+        if (!quote) {
+            console.error(`No quote returned for ${symbol}`);
             throw new Error(`No quote data available for ${symbol}`);
         }
-        return {
+
+        console.log(`Quote data for ${symbol}:`, JSON.stringify(quote, null, 2));
+
+        const stockData = {
             symbol: quote.symbol,
             name: quote.longName || quote.shortName || symbol,
             price: quote.regularMarketPrice || 0,
             change: quote.regularMarketChange || 0,
             changePercent: quote.regularMarketChangePercent || 0,
             volume: quote.regularMarketVolume || 0,
-            marketCap: quote.marketCap || 0
+            marketCap: quote.marketCap || 0,
+            previousClose: quote.regularMarketPreviousClose || 0
         };
+
+        console.log(`Processed stock data for ${symbol}:`, JSON.stringify(stockData, null, 2));
+        return stockData;
     } catch (error) {
-        console.error(`Error fetching quote for ${symbol}:`, error.message);
+        console.error(`Error fetching quote for ${symbol}:`, {
+            message: error.message,
+            stack: error.stack,
+            symbol: symbol
+        });
         throw new Error(`Failed to fetch quote for ${symbol}: ${error.message}`);
     }
 };

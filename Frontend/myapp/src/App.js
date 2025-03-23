@@ -10,6 +10,7 @@ import SellStock from "./SellStock";
 import StockDetails from "./StockDetails";
 import StockCompare from "./StockCompare";
 import StockRecommendations from "./StockRecommendations";
+import StockPrediction from "./StockPrediction";
 import Bonds from "./Bonds";
 import Insurance from "./Insurance";
 import BuyBond from "./BuyBond";
@@ -118,6 +119,14 @@ const AppContent = () => {
             element={
               <ProtectedRouteComponent>
                 <StockDetails />
+              </ProtectedRouteComponent>
+            } 
+          />
+          <Route 
+            path="/prediction/:symbol" 
+            element={
+              <ProtectedRouteComponent>
+                <StockPrediction />
               </ProtectedRouteComponent>
             } 
           />

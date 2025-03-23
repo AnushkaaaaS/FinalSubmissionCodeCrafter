@@ -611,4 +611,173 @@ router.get('/intraday/:symbol', async (req, res) => {
     }
 });
 
+/**
+ * @route   GET /api/stocks/prediction/:symbol
+ * @desc    Get stock price prediction and technical analysis
+ */
+router.get('/prediction/:symbol', async (req, res) => {
+    try {
+        const { symbol } = req.params;
+        
+        // Fetch current stock data
+        const quote = await yahooFinance.quote(symbol);
+        if (!quote) {
+            return res.status(404).json({ message: "Stock not found" });
+        }
+
+        // Fetch historical data for technical analysis
+        const historicalData = await yahooFinance.historical(symbol, {
+            period1: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000), // 1 year ago
+            period2: new Date(),
+            interval: '1d'
+        });
+
+        if (!historicalData || historicalData.length === 0) {
+            return res.status(404).json({ message: "No historical data available" });
+        }
+
+        // Calculate technical indicators
+        const prices = historicalData.map(d => d.close);
+        
+        // Calculate 20-day and 50-day moving averages
+        const ma20 = calculateMA(prices, 20);
+        const ma50 = calculateMA(prices, 50);
+        
+        // Calculate RSI
+        const rsi = calculateRSI(prices, 14);
+        
+        // Calculate trend and confidence
+        const { trend, confidence } = analyzeTrend(prices, ma20, ma50, rsi);
+
+        // Generate prediction
+        const currentPrice = quote.regularMarketPrice;
+        const predictedPrice = predictPrice(currentPrice, trend, confidence);
+
+        // Prepare response
+        const prediction = {
+            currentPrice,
+            predictedPrice,
+            trend,
+            confidence,
+            technicalIndicators: {
+                ma20: ma20[ma20.length - 1],
+                ma50: ma50[ma50.length - 1],
+                rsi: rsi[rsi.length - 1]
+            }
+        };
+
+        res.status(200).json(prediction);
+    } catch (error) {
+        console.error('Prediction Error:', error);
+        res.status(500).json({ 
+            message: "Failed to generate prediction",
+            error: error.message
+        });
+    }
+});
+
+// Helper function to calculate Moving Average
+function calculateMA(prices, period) {
+    const ma = [];
+    for (let i = 0; i < prices.length; i++) {
+        if (i < period - 1) {
+            ma.push(null);
+            continue;
+        }
+        const sum = prices.slice(i - period + 1, i + 1).reduce((a, b) => a + b, 0);
+        ma.push(sum / period);
+    }
+    return ma;
+}
+
+// Helper function to calculate RSI
+function calculateRSI(prices, period) {
+    const rsi = [];
+    for (let i = 0; i < prices.length; i++) {
+        if (i < period) {
+            rsi.push(null);
+            continue;
+        }
+
+        const changes = [];
+        for (let j = i - period + 1; j <= i; j++) {
+            changes.push(prices[j] - prices[j - 1]);
+        }
+
+        const gains = changes.map(c => c > 0 ? c : 0);
+        const losses = changes.map(c => c < 0 ? -c : 0);
+
+        const avgGain = gains.reduce((a, b) => a + b, 0) / period;
+        const avgLoss = losses.reduce((a, b) => a + b, 0) / period;
+
+        const rs = avgGain / avgLoss;
+        rsi.push(100 - (100 / (1 + rs)));
+    }
+    return rsi;
+}
+
+// Helper function to analyze trend
+function analyzeTrend(prices, ma20, ma50, rsi) {
+    const currentPrice = prices[prices.length - 1];
+    const currentMA20 = ma20[ma20.length - 1];
+    const currentMA50 = ma50[ma50.length - 1];
+    const currentRSI = rsi[rsi.length - 1];
+
+    let bullishSignals = 0;
+    let bearishSignals = 0;
+    let totalSignals = 0;
+
+    // Price above MA20
+    if (currentPrice > currentMA20) {
+        bullishSignals++;
+    } else {
+        bearishSignals++;
+    }
+    totalSignals++;
+
+    // MA20 above MA50
+    if (currentMA20 > currentMA50) {
+        bullishSignals++;
+    } else {
+        bearishSignals++;
+    }
+    totalSignals++;
+
+    // RSI analysis
+    if (currentRSI < 30) {
+        bullishSignals++;
+    } else if (currentRSI > 70) {
+        bearishSignals++;
+    }
+    totalSignals++;
+
+    const confidence = Math.max(bullishSignals, bearishSignals) / totalSignals;
+
+    if (bullishSignals > bearishSignals) {
+        return { trend: 'Bullish', confidence };
+    } else if (bearishSignals > bullishSignals) {
+        return { trend: 'Bearish', confidence };
+    } else {
+        return { trend: 'Neutral', confidence: 0.5 };
+    }
+}
+
+// Helper function to predict price
+function predictPrice(currentPrice, trend, confidence) {
+    const volatility = 0.02; // 2% daily volatility
+    const predictionDays = 5; // Predict 5 days ahead
+    
+    let predictedPrice = currentPrice;
+    for (let i = 0; i < predictionDays; i++) {
+        const change = trend === 'Bullish' ? 
+            volatility * confidence : 
+            trend === 'Bearish' ? 
+                -volatility * confidence : 
+                0;
+        predictedPrice *= (1 + change);
+    }
+    
+    return predictedPrice;
+}
+
 module.exports = router;

@@ -7,7 +7,8 @@ const transactionSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
     type: { type: String, enum: ['BUY', 'SELL'], required: true },
-    date: { type: Date, default: Date.now }
+    automated: { type: Boolean, default: false },
+    timestamp: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Transaction', transactionSchema);

@@ -33,6 +33,9 @@ const Navbar = () => {
         <Link to="/insurance" className={`nav-link ${location.pathname === '/insurance' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
           Insurance
         </Link>
+        <Link to="/auto-trading" className={`nav-link ${location.pathname === '/auto-trading' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
+          Auto Trading
+        </Link>
         <Link to="/learning" className={`nav-link ${location.pathname === '/learning' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
           Learning
         </Link>
